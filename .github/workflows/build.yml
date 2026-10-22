@@ -1,0 +1,39 @@
+name: build
+
+# Rebuilds the patched packages and runs the PHP test suite (RPM %check).
+# The packages built here are unsigned; releases are signed offline.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rpm:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        el: [el7, el6]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+
+      - name: Build ${{ matrix.el }}
+        run: build/build.sh ${{ matrix.el }} "$RUNNER_TEMP/build"
+
+      - name: Test summary
+        if: always()
+        run: grep -A 14 '^TEST RESULT SUMMARY' "$RUNNER_TEMP/build/build.log" || true
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        if: always()
+        with:
+          name: php-${{ matrix.el }}
+          path: |
+            ${{ runner.temp }}/build/RPMS/
+            ${{ runner.temp }}/build/SRPMS/
+            ${{ runner.temp }}/build/build.log

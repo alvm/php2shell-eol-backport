@@ -1,0 +1,40 @@
+--- a/php.spec
++++ b/php.spec
+@@ -69,7 +69,7 @@
+ Summary: PHP scripting language for creating dynamic web sites
+ Name: php
+ Version: 5.4.16
+-Release: 48%{?dist}
++Release: 48%{?dist}.php2shell.1
+ # All files licensed under PHP version 3.01, except
+ # Zend is licensed under Zend
+ # TSRM is licensed under BSD
+@@ -218,6 +218,9 @@
+ Patch165: php-5.4.16-CVE-2018-5712.patch
+ Patch166: php-5.4.16-CVE-2018-10547.patch
+ Patch167: php-5.4.16-CVE-2019-11043.patch
++# php2shell-eol-backport: minimal fix for CVE-2026-109618 / CVE-2026-109619,
++# ported from php-src 712e60f9ed (official PHP 7.4 backport)
++Patch9001: php-5.4.16-48.el7-cve-2026-109618.patch
+ 
+ 
+ BuildRequires: bzip2-devel, curl-devel >= 7.9, gmp-devel
+@@ -806,6 +809,7 @@
+ %patch165 -p1 -b .cve5712
+ %patch166 -p1 -b .cve10547
+ %patch167 -p1 -b .cve11043
++%patch9001 -p1 -b .php2shell
+ 
+ 
+ # Prevent %%doc confusion over LICENSE files
+@@ -1577,6 +1581,10 @@
+ 
+ 
+ %changelog
++* Thu Oct 22 2026 Oleksii Molchanov <2106429+alvm@users.noreply.github.com> - 5.4.16-48.php2shell.1
++- Fix CVE-2026-109618 and CVE-2026-109619 (php2shell): port of the minimal
++  upstream fix "Avoid state corruption via bailout" (php-src 712e60f9ed)
++
+ * Tue Oct 29 2019 Remi Collet <rcollet@redhat.com> - 5.4.16-48
+ - fix underflow in env_path_info in fpm_main.c CVE-2019-11043
+ 

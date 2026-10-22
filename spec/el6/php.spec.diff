@@ -1,0 +1,40 @@
+--- a/php.spec
++++ b/php.spec
+@@ -18,7 +18,7 @@
+ Summary: PHP scripting language for creating dynamic web sites
+ Name: php
+ Version: 5.3.3
+-Release: 50%{?dist}
++Release: 50%{?dist}.php2shell.1
+ License: PHP
+ Group: Development/Languages
+ URL: http://www.php.net/
+@@ -161,6 +161,9 @@
+ Patch272: php-5.3.3-CVE-2015-4644.patch
+ Patch273: php-5.3.3-CVE-2016-5385.patch
+ Patch274: php-5.3.3-CVE-2019-11043.patch
++# php2shell-eol-backport: minimal fix for CVE-2026-109618 / CVE-2026-109619,
++# ported from php-src 712e60f9ed (official PHP 7.4 backport)
++Patch9001: php-5.3.3-50.el6_10-cve-2026-109618.patch
+ 
+ 
+ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+@@ -632,6 +635,7 @@
+ %patch272 -p1 -b .cve4644
+ %patch273 -p1 -b .cve5385
+ %patch274 -p1 -b .cve11043
++%patch9001 -p1 -b .php2shell
+ 
+ # Prevent %%doc confusion over LICENSE files
+ cp Zend/LICENSE Zend/ZEND_LICENSE
+@@ -1119,6 +1123,10 @@
+ 
+ 
+ %changelog
++* Thu Oct 22 2026 Oleksii Molchanov <2106429+alvm@users.noreply.github.com> - 5.3.3-50.php2shell.1
++- Fix CVE-2026-109618 and CVE-2026-109619 (php2shell): port of the minimal
++  upstream fix "Avoid state corruption via bailout" (php-src 712e60f9ed)
++
+ * Tue Oct 29 2019 Remi Collet <rcollet@redhat.com> - 5.3.3-50
+ - fix underflow in env_path_info in fpm_main.c CVE-2019-11043
+ 
