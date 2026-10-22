@@ -1,15 +1,15 @@
 # Alternatives and how this project compares
 
-Status as of 22 October 2026. If something here is out of date or wrong, please open an issue.
+Status as of 23 October 2026. If something here is out of date or wrong, please open an issue.
 
 ## Vendors: the stock EL6 / EL7 packages
 
 | Vendor | EL7 `php-5.4.16` | EL6 `php-5.3.3` | Notes |
 |---|---|---|---|
-| Red Hat | no update | no update | [CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109618.json) for RHEL 6 and 7 `php`: CVE-2026-109618 *under investigation*, CVE-2026-109619 *not affected* ("vulnerable code not present") |
+| Red Hat | no update | no update | [RHSB-2026-013](https://access.redhat.com/security/vulnerabilities/RHSB-2026-013) (22 Oct): RHEL 7 is "Only affected by CVE-2026-109619 — In a default configuration, the version of PHP in use is vulnerable"; the CVE-2026-109618 code is not present. The older [CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109619.json) data still lists RHEL 7 as not affected by CVE-2026-109619; for RHEL 6 it lists CVE-2026-109619 as *not affected* and CVE-2026-109618 as *under investigation* |
 | Oracle | no update | no update | [errata](https://linux.oracle.com/cve/CVE-2026-109618.html) only for Oracle Linux 8, 9 and 10 |
 | TuxCare ELS (commercial) | fixed on 21 Oct 2026, `php-5.4.16-48.el7.tuxcare.els21` ([CLSA-2026:1792611997](https://errata.tuxcare.com/els_os/rhel7els/CLSA-2026-1792611997.html)) | fixed on 21 Oct 2026, `php-5.3.3-50.el6_10.tuxcare.ol.els27` ([CLSA-2026:1792611737](https://errata.tuxcare.com/els_os/oraclelinux6els/CLSA-2026-1792611737.html)) | subscription; builds for CentOS, RHEL and Oracle Linux |
-| CIQ Bridge (commercial, CentOS 7) | pending | — | [KB article](https://kb.ciq.com/article/security-advisories/cve-php2shell-mitigation) |
+| CIQ Bridge (commercial, CentOS 7) | no fix planned | — | [KB article](https://kb.ciq.com/article/security-advisories/cve-php2shell-mitigation): "No patched PHP package will be available for Bridge" |
 
 If you already have a TuxCare subscription, use their packages: they come with vendor support and cover other
 vulnerabilities too. TuxCare describes the same design as this project ("disable the session upload progress

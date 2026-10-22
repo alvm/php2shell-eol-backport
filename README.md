@@ -1,8 +1,9 @@
 # php2shell-eol-backport
 
-Unofficial fix for **CVE-2026-109618** and **CVE-2026-109619** ("php2shell") for the end-of-life PHP packages
-of **Enterprise Linux 6 and 7**: `php-5.3.3` (RHEL / CentOS / Oracle Linux 6) and `php-5.4.16`
-(RHEL / CentOS / Oracle Linux / Scientific Linux 7).
+Unofficial backport of the official fix for **CVE-2026-109618** and **CVE-2026-109619** ("php2shell") to the
+end-of-life PHP packages of **Enterprise Linux 6 and 7**: `php-5.3.3` (RHEL / CentOS / Oracle Linux 6) and
+`php-5.4.16` (RHEL / CentOS / Oracle Linux / Scientific Linux 7). Which of the two CVEs affect PHP 5 is
+explained in [How serious is this on PHP 5?](#how-serious-is-this-on-php-5)
 
 PHP fixed both vulnerabilities on 21 Oct 2026 in 8.2.35, 8.3.36, 8.4.27 and 8.5.12, and published source
 backports for 7.4, 8.0 and 8.1. Nothing was released for PHP 5, and the EL6 / EL7 vendors have not shipped
@@ -35,18 +36,32 @@ The release suffix sorts above the vendor package, and below any future vendor e
 
 ### How serious is this on PHP 5?
 
-Probably less than on PHP 7 and 8, but there is no definite answer yet:
+The two CVEs affect the PHP 5 packages differently (status of 23 Oct 2026):
 
-- Red Hat rates the RHEL 6 / 7 `php` packages as not affected by CVE-2026-109619 ("vulnerable code not present")
-  and lists CVE-2026-109618 as under investigation
-  ([CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109618.json)).
-- An [independent analysis of PHP 5.3](https://github.com/euriconicacio/blog/blob/main/all_collections/_posts/2026-10-22-evaluating-php2shell-reachability-and-corruptibility-in-php-5-3-15.md)
-  found that the out-of-memory fault can be reached, but the published memory corruption step relies on
-  PHP 7 engine internals, so on PHP 5 the known attack ends in a denial of service. PHP 5.4–5.6 were assessed by
-  comparing the code, not tested, and other attack paths are not ruled out.
+| | PHP 5.4 (EL7) | PHP 5.3 (EL6) |
+|---|---|---|
+| CVE-2026-109618 | vulnerable code not present | vulnerable code not present |
+| CVE-2026-109619 | **affected** in the default configuration | not affected |
 
-This project applies the official mitigation anyway: it removes the unsafe error path itself, not only the
-known way to reach it.
+- **CVE-2026-109618.** The memory corruption is in hash table code that was first released in PHP 7.3.0
+  (php-src commit 6de54703f). The original report says "PHP 7.2 and earlier do not contain this exact raw-key
+  ordering" ([Red Hat Bugzilla 2553995](https://bugzilla.redhat.com/show_bug.cgi?id=2553995), comment 0), and
+  PHP 5.3 / 5.4 do not have these functions at all. Red Hat's bulletin
+  [RHSB-2026-013](https://access.redhat.com/security/vulnerabilities/RHSB-2026-013) says the same for RHEL 7.
+  An [independent analysis of PHP 5.3](https://github.com/euriconicacio/blog/blob/main/all_collections/_posts/2026-10-22-evaluating-php2shell-reachability-and-corruptibility-in-php-5-3-15.md)
+  found that the out-of-memory fault can be reached, but on PHP 5 the known attack ends in a denial of service.
+- **CVE-2026-109619.** RHSB-2026-013 (updated on 22 Oct 2026) lists RHEL 7 as "Only affected by
+  CVE-2026-109619 — In a default configuration, the version of PHP in use is vulnerable". The known path is
+  session upload progress, which PHP 5.4 has (enabled by default) and PHP 5.3 does not. Red Hat's
+  [CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109619.json), generated
+  earlier, still lists RHEL 7 as not affected.
+
+So on EL7 the patch matters mainly for CVE-2026-109619: it disables session upload progress in the code. The
+rest of the patch, and the whole patch on EL6, is defense in depth: it removes the unsafe error path itself,
+in case another way to reach it exists in PHP 5.
+
+If you cannot install a package, `session.upload_progress.enabled = 0` in `php.ini` (not with `ini_set()`),
+followed by a restart of every process that runs PHP, closes the known path of CVE-2026-109619.
 
 ## Install
 
