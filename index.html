@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>php2shell-eol-backport: fix for CVE-2026-109618 / CVE-2026-109619 on EL6 / EL7</title>
+<meta name="description" content="Unofficial fixed php-5.4.16 (RHEL, CentOS, Oracle Linux, Scientific Linux 7) and php-5.3.3 (EL6) packages for CVE-2026-109618 and CVE-2026-109619 (php2shell). Signed yum repository.">
+<style>
+  :root { --bg: #ffffff; --fg: #1f2328; --muted: #59636e; --code: #f6f8fa; --border: #d1d9e0; --accent: #1a7f37; color-scheme: light dark; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --code: #161b22; --border: #3d444d; --accent: #3fb950; } }
+  body { background: var(--bg); color: var(--fg); font: 16px/1.55 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; margin: 0; padding: 0 16px; }
+  main { max-width: 760px; margin: 40px auto 64px; }
+  h1 { font-size: 1.9em; margin-bottom: 0.2em; }
+  .lead { color: var(--muted); margin-top: 0; }
+  pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+  .note { border-left: 4px solid var(--accent); padding: 4px 14px; color: var(--muted); }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+<h1>php2shell-eol-backport</h1>
+<p class="lead">Unofficial fix for CVE-2026-109618 and CVE-2026-109619 ("php2shell") for the end-of-life PHP packages of Enterprise Linux 6 and 7.</p>
+
+<table>
+  <tr><th>Distribution</th><th>Fixed package</th></tr>
+  <tr><td>RHEL / CentOS / Oracle Linux / Scientific Linux 7</td><td><code>php-5.4.16-48.el7.php2shell.1</code></td></tr>
+  <tr><td>RHEL / CentOS / Oracle Linux 6</td><td><code>php-5.3.3-50.el6_10.php2shell.1</code></td></tr>
+</table>
+
+<h2>Install</h2>
+<pre># EL7
+curl -o /etc/yum.repos.d/php2shell-eol-backport.repo \
+  https://alvm.github.io/php2shell-eol-backport/php2shell-eol-backport-el7.repo
+
+# EL6
+curl -o /etc/yum.repos.d/php2shell-eol-backport.repo \
+  https://alvm.github.io/php2shell-eol-backport/php2shell-eol-backport-el6.repo
+
+yum update 'php*'
+service httpd restart        # and php-fpm, if you use it</pre>
+
+<p>Packages and repository metadata are signed with this key (yum asks you to confirm it on first use):</p>
+<pre>2757 B60F D23D ED25 021B  BE37 8079 7C97 A561 BC94</pre>
+
+<p class="note">This is not an official fix from PHP, Red Hat or Oracle. Read the
+<a href="https://github.com/alvm/php2shell-eol-backport#behaviour-changes-and-known-limitations">behaviour changes and known limitations</a>
+before you install, and move to a supported PHP version as soon as you can.</p>
+
+<p>Source, build scripts, test results and the security policy:
+<a href="https://github.com/alvm/php2shell-eol-backport">github.com/alvm/php2shell-eol-backport</a>.
+Release files: <a href="https://github.com/alvm/php2shell-eol-backport/releases">GitHub Releases</a>.</p>
+</main>
+</body>
+</html>
