@@ -33,6 +33,21 @@ port of the official minimal fix.
 The release suffix sorts above the vendor package, and below any future vendor erratum
 (for example `48.el7_9.1`), so an official fix, if one ever appears, replaces this one with a normal update.
 
+### How serious is this on PHP 5?
+
+Probably less than on PHP 7 and 8, but there is no definite answer yet:
+
+- Red Hat rates the RHEL 6 / 7 `php` packages as not affected by CVE-2026-109619 ("vulnerable code not present")
+  and lists CVE-2026-109618 as under investigation
+  ([CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109618.json)).
+- An [independent analysis of PHP 5.3](https://github.com/euriconicacio/blog/blob/main/all_collections/_posts/2026-10-22-evaluating-php2shell-reachability-and-corruptibility-in-php-5-3-15.md)
+  found that the out-of-memory fault can be reached, but the published memory corruption step relies on
+  PHP 7 engine internals, so on PHP 5 the known attack ends in a denial of service. PHP 5.4–5.6 were assessed by
+  comparing the code, not tested, and other attack paths are not ruled out.
+
+This project applies the official mitigation anyway: it removes the unsafe error path itself, not only the
+known way to reach it.
+
 ## Install
 
 > The package repository is not published yet. Until then, build the packages yourself (see below).
@@ -83,7 +98,20 @@ This is a minimal mitigation of the published attack paths, not a full security 
   | EL7, PHP 5.4.16 | 12373 | 14 | 23 (8 upload progress + bug45392) |
   | EL6, PHP 5.3.3 | 11213 | 55 | 56 (bug45392) |
 
+  The exact counts vary slightly between build environments: on GitHub runners two SPL file-owner tests
+  (`DirectoryIterator_getOwner/getGroup_basic`) also fail, and `time_sleep_until_basic` is timing-sensitive.
+  None of them touches code changed by the patch.
+
+- The PHP 5.4 patch was compared with an independent port of the same fix for Amazon Linux 2's `php-5.4.16`:
+  the core changes are identical. The differences are listed in [docs/ALTERNATIVES.md](docs/ALTERNATIVES.md).
 - No exploit code was written or used. Please review the patch against the upstream commit yourself.
+
+## Alternatives
+
+- **Commercial:** TuxCare Extended Lifecycle Support shipped fixed packages for EL6 and EL7 on 21 Oct 2026.
+- **Other free patches:** mostly for the upstream 5.4.45 / 5.3.29 sources, and one for Amazon Linux.
+
+See [docs/ALTERNATIVES.md](docs/ALTERNATIVES.md) for the vendor status, a list of projects and a comparison.
 
 ## Build it yourself
 
@@ -116,12 +144,13 @@ patches/el7, patches/el6   the fix, as a patch against the vendor source tree
 spec/el7, spec/el6         vendor spec files with the patch added, and their diffs
 build/                     reproducible container build
 tools/check-patched.sh     check an installed system
+docs/ALTERNATIVES.md       vendor status, other projects, comparison
+SECURITY.md                how to report a security problem
 ```
 
 ## Reporting problems
 
-Open an issue for bugs. For a security problem in the patch itself, use GitHub's private vulnerability
-reporting in this repository.
+Open an issue for bugs. For a security problem in the patch itself, see [SECURITY.md](SECURITY.md).
 
 ## Credits and license
 
