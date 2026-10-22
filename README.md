@@ -50,13 +50,24 @@ known way to reach it.
 
 ## Install
 
-> The package repository is not published yet. Until then, build the packages yourself (see below).
+From the signed yum repository on GitHub Pages:
 
 ```bash
-rpm --import https://raw.githubusercontent.com/alvm/php2shell-eol-backport/main/RPM-GPG-KEY-php2shell-eol-backport
-yum update 'php*'
+# EL7
+curl -o /etc/yum.repos.d/php2shell-eol-backport.repo \
+  https://alvm.github.io/php2shell-eol-backport/php2shell-eol-backport-el7.repo
+# EL6
+curl -o /etc/yum.repos.d/php2shell-eol-backport.repo \
+  https://alvm.github.io/php2shell-eol-backport/php2shell-eol-backport-el6.repo
+
+yum update 'php*'            # confirm the signing key: fingerprint under "Signing key" below
 service httpd restart        # and php-fpm, if you use it
 ```
+
+The repository contains only the PHP packages of this project, and both the packages and the repository
+metadata are signed (`gpgcheck=1`, `repo_gpgcheck=1`). The RPMs and source RPMs are also attached to each
+[release](https://github.com/alvm/php2shell-eol-backport/releases), with a signed `SHA256SUMS`; install them
+with `yum localinstall`.
 
 ## Check a system
 
