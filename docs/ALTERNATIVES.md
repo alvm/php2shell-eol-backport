@@ -16,6 +16,10 @@ vulnerabilities too. TuxCare describes the same design as this project ("disable
 handler and harden request state after bailout", "memory_limit and allocation overflow fatals now print to stderr
 and terminate the process"). Their source was not compared.
 
+Outside Enterprise Linux, Ubuntu ships the fix for its PHP 5.5 package on 14.04 LTS
+(`php5 5.5.9+dfsg-1ubuntu4.29+esm18`, [USN-8948-2](https://ubuntu.com/security/notices/USN-8948-2)), through the
+Ubuntu Pro Legacy Support add-on. Its source is available to subscribers only.
+
 ## Free community patches for PHP 5.3 / 5.4
 
 Most community ports target the last upstream releases (5.4.45, 5.3.29), the version used by PHP installers,
@@ -26,6 +30,9 @@ many fixes backported by the vendor.
 |---|---|---|
 | this project | vendor `php-5.4.16-48.el7` (RHEL / CentOS / Oracle Linux / Scientific Linux 7), `php-5.3.3-50.el6_10` (EL6) | patches against the vendor trees, vendor spec files, container build, CI with the PHP test suite |
 | [leonlai-tw/php-eol-cve-2026-109618-109619](https://github.com/leonlai-tw/php-eol-cve-2026-109618-109619) | Amazon Linux 2 `php-5.4.16-46.amzn2.0.7` (derived from the RHEL 7 package), Amazon Linux 1 `php-5.3.29`, Remi `php73` on EL7 | patches, build scripts |
+| [soopermouse/PHP2SHELL_PHP5.4_patch](https://github.com/soopermouse/PHP2SHELL_PHP5.4_patch) | vendor `php-5.4.16-48.el7` | patches, spec file; marked by its author as a release candidate, not built as RPM |
+| [deconstruction/EOLphp-php2shell-patches](https://github.com/deconstruction/EOLphp-php2shell-patches) | vendor `php-5.3.3-50.el6_10`; upstream 5.2.17 … 8.1.34 | source patches |
+| [Anton-Barinov/php2shell-patches](https://github.com/Anton-Barinov/php2shell-patches) | upstream 5.4 … 8.1 | source patches (a minimal variant and the author's own variant that keeps session upload progress working), build scripts, CI |
 | [vperetti/php-cve-2026-109618-109619-backports](https://github.com/vperetti/php-cve-2026-109618-109619-backports) | upstream 5.4.45 … 7.3.33 | source patches |
 | [nft-syou/php-5.4.45-php2shell-patch](https://github.com/nft-syou/php-5.4.45-php2shell-patch) | upstream 5.4.45 | source patch |
 | [valentin-marquez/php](https://github.com/valentin-marquez/php) | upstream 5.4.45 … 8.1 | source patches, build script |
@@ -62,3 +69,8 @@ The core of the fix is the same line for line in both ports. This project also p
 paths and the multipart part limit of the official fix. For comparison, Red Hat's own PHP 7.4 update for RHEL 8
 (`php-7.4.33-8`) carries the whole official patch except the `max_multipart_body_parts` part, because that
 package already had the limit from an earlier fix (CVE-2023-0662).
+
+Two more ports of the vendor trees appeared on 21 Oct: soopermouse's for `php-5.4.16-48.el7` and the
+`php-5.3.3-50.el6_10` patch of deconstruction. soopermouse's port carries the same changes as this project except
+the string concatenation size check; deconstruction's patches carry all of them and also reset two more engine
+stacks. This compares which changes are present, not a line-by-line review.

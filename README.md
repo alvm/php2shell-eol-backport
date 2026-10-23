@@ -48,17 +48,25 @@ The two CVEs affect the PHP 5 packages differently (status of 23 Oct 2026):
   ordering" ([Red Hat Bugzilla 2553995](https://bugzilla.redhat.com/show_bug.cgi?id=2553995), comment 0), and
   PHP 5.3 / 5.4 do not have these functions at all. Red Hat's bulletin
   [RHSB-2026-013](https://access.redhat.com/security/vulnerabilities/RHSB-2026-013) says the same for RHEL 7.
+  CrowdStrike's [analysis](https://www.crowdstrike.com/en-us/blog/crowdstrike-protects-customers-from-php-rce-zero-days/)
+  gives the same date: this code "first shipped in PHP 7.3.0 (December 2018)".
   An [independent analysis of PHP 5.3](https://github.com/euriconicacio/blog/blob/main/all_collections/_posts/2026-10-22-evaluating-php2shell-reachability-and-corruptibility-in-php-5-3-15.md)
   found that the out-of-memory fault can be reached, but on PHP 5 the known attack ends in a denial of service.
 - **CVE-2026-109619.** RHSB-2026-013 (updated on 22 Oct 2026) lists RHEL 7 as "Only affected by
   CVE-2026-109619 — In a default configuration, the version of PHP in use is vulnerable". The known path is
-  session upload progress, which PHP 5.4 has (enabled by default) and PHP 5.3 does not. Red Hat's
+  session upload progress, which PHP 5.4 has (enabled by default) and PHP 5.3 does not. CrowdStrike also
+  dates this path back to PHP 5.4. Red Hat's
   [CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109619.json) data says the
   same since 23 Oct: RHEL 7 is affected and no fix is available.
 
 Red Hat's VEX data also lists RHEL 6 as affected by both CVEs, with the remark "Out of support scope": Red Hat
 no longer assesses RHEL 6. The table above for PHP 5.3 follows from the code: it has neither the code of
 CVE-2026-109618 nor session upload progress.
+
+Ubuntu lists both CVEs as fixed for its PHP 5.5 package on 14.04
+([USN-8948-2](https://ubuntu.com/security/notices/USN-8948-2)). This records which update carries the fix, not
+an analysis of the code: Ubuntu lists CVE-2026-109618 as fixed for PHP 7.0 and 7.2 as well, although its code
+first shipped in PHP 7.3.0.
 
 So on EL7 the patch matters mainly for CVE-2026-109619: it disables session upload progress in the code. The
 rest of the patch, and the whole patch on EL6, is defense in depth: it removes the unsafe error path itself,
@@ -140,7 +148,8 @@ This is a minimal mitigation of the published attack paths, not a full security 
 ## Alternatives
 
 - **Commercial:** TuxCare Extended Lifecycle Support shipped fixed packages for EL6 and EL7 on 21 Oct 2026.
-- **Other free patches:** mostly for the upstream 5.4.45 / 5.3.29 sources, and one for Amazon Linux.
+- **Other free patches:** mostly for the upstream 5.4.45 / 5.3.29 sources, one for Amazon Linux, and source
+  patches for the same EL6 / EL7 vendor trees.
 
 See [docs/ALTERNATIVES.md](docs/ALTERNATIVES.md) for the vendor status, a list of projects and a comparison.
 
