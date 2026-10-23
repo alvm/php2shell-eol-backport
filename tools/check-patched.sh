@@ -37,11 +37,13 @@ fi
 # maps a replaced (deleted) PHP file runs the old code. This finds every such
 # process (mod_php in any httpd instance, php-fpm, php-cgi, PHP CLI daemons),
 # but reading the memory maps of other users' processes needs root.
+# rpm renames a replaced file before it removes it, so the map shows a suffix,
+# for example "/usr/lib64/httpd/modules/libphp5.so;6adb7398 (deleted)".
 if [ "$status" -eq 0 ]; then
     if [ "$(id -u)" -ne 0 ]; then
         echo "NOTE        run as root to check running processes (httpd, php-fpm, ...)"
     else
-        pids=$(grep -lE '(libphp5[^ ]*\.so|/usr/lib(64)?/php/|/usr/bin/php[^ /]*|/usr/sbin/php-fpm) \(deleted\)$' \
+        pids=$(grep -lE '(/libphp5[^ ]*|/usr/lib(64)?/php/[^ ]*|/usr/bin/php[^ /]*|/usr/sbin/php-fpm[^ /]*) \(deleted\)$' \
                /proc/[0-9]*/maps 2>/dev/null | cut -d/ -f3 | sort -n)
         if [ -n "$pids" ]; then
             # shellcheck disable=SC2086
