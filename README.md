@@ -53,8 +53,12 @@ The two CVEs affect the PHP 5 packages differently (status of 23 Oct 2026):
 - **CVE-2026-109619.** RHSB-2026-013 (updated on 22 Oct 2026) lists RHEL 7 as "Only affected by
   CVE-2026-109619 — In a default configuration, the version of PHP in use is vulnerable". The known path is
   session upload progress, which PHP 5.4 has (enabled by default) and PHP 5.3 does not. Red Hat's
-  [CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109619.json), generated
-  earlier, still lists RHEL 7 as not affected.
+  [CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109619.json) data says the
+  same since 23 Oct: RHEL 7 is affected and no fix is available.
+
+Red Hat's VEX data also lists RHEL 6 as affected by both CVEs, with the remark "Out of support scope": Red Hat
+no longer assesses RHEL 6. The table above for PHP 5.3 follows from the code: it has neither the code of
+CVE-2026-109618 nor session upload progress.
 
 So on EL7 the patch matters mainly for CVE-2026-109619: it disables session upload progress in the code. The
 rest of the patch, and the whole patch on EL6, is defense in depth: it removes the unsafe error path itself,
@@ -87,11 +91,12 @@ with `yum localinstall`.
 ## Check a system
 
 ```bash
-./tools/check-patched.sh
+sudo ./tools/check-patched.sh
 ```
 
-It lists every installed PHP 5 package as `FIXED` or `VULNERABLE`, checks that the PHP CLI runs the fixed
-code, and warns if `httpd` or `php-fpm` was started before the update and still runs the old code.
+It lists every installed PHP 5 package as `FIXED` or `VULNERABLE` and checks that the PHP CLI runs the fixed
+code. Run as root, it also lists every running process that still uses the replaced PHP files (mod_php in
+any httpd instance, php-fpm, php-cgi, PHP CLI daemons), so you know what to restart.
 
 ## Behaviour changes and known limitations
 
