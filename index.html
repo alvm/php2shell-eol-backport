@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>php2shell-eol-backport: fix for CVE-2026-109618 / CVE-2026-109619 on EL6 / EL7</title>
-<meta name="description" content="Unofficial fixed php-5.4.16 (RHEL, CentOS, Oracle Linux, Scientific Linux 7) and php-5.3.3 (EL6) packages for CVE-2026-109618 and CVE-2026-109619 (php2shell). Signed yum repository.">
+<title>php2shell-eol-backport: fixes for php2shell (CVE-2026-109618 / CVE-2026-109619) and phpAfterShell (CVE-2026-126714) on EL6 / EL7</title>
+<meta name="description" content="Unofficial fixed php-5.4.16 (RHEL, CentOS, Oracle Linux, Scientific Linux 7) and php-5.3.3 (EL6) packages for CVE-2026-109618 and CVE-2026-109619 (php2shell) and CVE-2026-126714 (phpAfterShell). Signed yum repository.">
 <style>
   :root { --bg: #ffffff; --fg: #1f2328; --muted: #59636e; --code: #f6f8fa; --border: #d1d9e0; --accent: #1a7f37; color-scheme: light dark; }
   @media (prefers-color-scheme: dark) { :root { --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --code: #161b22; --border: #3d444d; --accent: #3fb950; } }
@@ -23,12 +23,12 @@
 <body>
 <main>
 <h1>php2shell-eol-backport</h1>
-<p class="lead">Unofficial fix for CVE-2026-109618 and CVE-2026-109619 ("php2shell") for the end-of-life PHP packages of Enterprise Linux 6 and 7.</p>
+<p class="lead">Unofficial fixes for CVE-2026-109618 and CVE-2026-109619 ("php2shell") and, since release 2, CVE-2026-126714 ("phpAfterShell") for the end-of-life PHP packages of Enterprise Linux 6 and 7.</p>
 
 <table>
   <tr><th>Distribution</th><th>Fixed package</th></tr>
-  <tr><td>RHEL / CentOS / Oracle Linux / Scientific Linux 7</td><td><code>php-5.4.16-48.el7.php2shell.1</code></td></tr>
-  <tr><td>RHEL / CentOS / Oracle Linux 6</td><td><code>php-5.3.3-50.el6_10.php2shell.1</code></td></tr>
+  <tr><td>RHEL / CentOS / Oracle Linux / Scientific Linux 7</td><td><code>php-5.4.16-48.el7.php2shell.2</code></td></tr>
+  <tr><td>RHEL / CentOS / Oracle Linux 6</td><td><code>php-5.3.3-50.el6_10.php2shell.2</code></td></tr>
 </table>
 
 <h2>Install</h2>

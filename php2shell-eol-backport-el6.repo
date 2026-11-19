@@ -1,5 +1,5 @@
 [php2shell-eol-backport]
-name=php2shell-eol-backport - fix for CVE-2026-109618 / CVE-2026-109619 (EL6)
+name=php2shell-eol-backport - fixes for php2shell and phpAfterShell (EL6)
 baseurl=https://alvm.github.io/php2shell-eol-backport/el6/x86_64
 enabled=1
 gpgcheck=1
