@@ -69,7 +69,7 @@
 Summary: PHP scripting language for creating dynamic web sites
 Name: php
 Version: 5.4.16
-Release: 48%{?dist}.php2shell.1
+Release: 48%{?dist}.php2shell.2
 # All files licensed under PHP version 3.01, except
 # Zend is licensed under Zend
 # TSRM is licensed under BSD
@@ -221,6 +221,9 @@ Patch167: php-5.4.16-CVE-2019-11043.patch
 # php2shell-eol-backport: minimal fix for CVE-2026-109618 / CVE-2026-109619,
 # ported from php-src 712e60f9ed (official PHP 7.4 backport)
 Patch9001: php-5.4.16-48.el7-cve-2026-109618.patch
+# php2shell-eol-backport: fix for CVE-2026-126714 (phpAfterShell): the files session
+# handler always truncates the session file before writing; ported from php-src 41c0941ae27
+Patch9002: php-5.4.16-48.el7-cve-2026-126714.patch
 
 
 BuildRequires: bzip2-devel, curl-devel >= 7.9, gmp-devel
@@ -810,6 +813,7 @@ support for using the enchant library to PHP.
 %patch166 -p1 -b .cve10547
 %patch167 -p1 -b .cve11043
 %patch9001 -p1 -b .php2shell
+%patch9002 -p1 -b .cve126714
 
 
 # Prevent %%doc confusion over LICENSE files
@@ -1581,6 +1585,10 @@ fi
 
 
 %changelog
+* Thu Nov 19 2026 Oleksii Molchanov <2106429+alvm@users.noreply.github.com> - 5.4.16-48.php2shell.2
+- Fix CVE-2026-126714 (phpAfterShell): the files session handler always
+  truncates the session file before writing it (port of php-src 41c0941ae27)
+
 * Thu Oct 22 2026 Oleksii Molchanov <2106429+alvm@users.noreply.github.com> - 5.4.16-48.php2shell.1
 - Fix CVE-2026-109618 and CVE-2026-109619 (php2shell): port of the minimal
   upstream fix "Avoid state corruption via bailout" (php-src 712e60f9ed)

@@ -1,14 +1,17 @@
 # php2shell-eol-backport
 
-Unofficial backport of the official fix for **CVE-2026-109618** and **CVE-2026-109619** ("php2shell") to the
-end-of-life PHP packages of **Enterprise Linux 6 and 7**: `php-5.3.3` (RHEL / CentOS / Oracle Linux 6) and
-`php-5.4.16` (RHEL / CentOS / Oracle Linux / Scientific Linux 7). Which of the two CVEs affect PHP 5 is
-explained in [How serious is this on PHP 5?](#how-serious-is-this-on-php-5)
+Unofficial backport of the official fixes for **CVE-2026-109618** and **CVE-2026-109619** ("php2shell") and,
+since release 2, **CVE-2026-126714** ("phpAfterShell") to the end-of-life PHP packages of
+**Enterprise Linux 6 and 7**: `php-5.3.3` (RHEL / CentOS / Oracle Linux 6) and `php-5.4.16`
+(RHEL / CentOS / Oracle Linux / Scientific Linux 7). Which of these CVEs affect PHP 5 is explained in
+[How serious is this on PHP 5?](#how-serious-is-this-on-php-5) and
+[phpAfterShell (CVE-2026-126714) and CVE-2026-115560](#phpaftershell-cve-2026-126714-and-cve-2026-115560).
 
-PHP fixed both vulnerabilities on 21 Oct 2026 in 8.2.35, 8.3.36, 8.4.27 and 8.5.12, and published source
-backports for 7.4, 8.0 and 8.1. Nothing was released for PHP 5, and the EL6 / EL7 vendors have not shipped
-a fix. If you have to keep such a system running, this project gives you rebuilt vendor packages with a
-port of the official minimal fix.
+PHP fixed php2shell on 21 Oct 2026 in 8.2.35, 8.3.36, 8.4.27 and 8.5.12, and published source backports for
+7.4, 8.0 and 8.1. Nothing was released for PHP 5. Red Hat and Oracle later shipped a fix for CVE-2026-109619 in
+PHP 5.4 to their paid RHEL 7 / Oracle Linux 7 extended support customers only; there is no vendor fix for EL6
+(see [docs/ALTERNATIVES.md](docs/ALTERNATIVES.md)). If you have to keep such a system running, this project
+gives you rebuilt vendor packages with a port of the official minimal fix.
 
 > **This is not an official fix from PHP, Red Hat or Oracle.** It reduces the risk until you can move to a
 > supported PHP version — do that as soon as you can.
@@ -22,17 +25,26 @@ port of the official minimal fix.
   [712e60f9ed](https://github.com/php/php-src/commit/712e60f9edfd03f0960fc4fc3c2c375f42b90aa2)
   ("Avoid state corruption via bailout"), the official minimal backport for PHP 7.4, to the PHP 5.3 / 5.4
   code base. It is applied on top of the vendor package with all its existing security patches.
+- Release 2 adds [CVE-2026-126714](https://github.com/php/php-src/security/advisories/GHSA-fm2m-fjf5-v3cp)
+  ("phpAfterShell", CVSS 4.0 9.2): a port of php-src commit
+  [41c0941ae27](https://github.com/php/php-src/commit/41c0941ae27d1033129e0e09ce3af034ffee86ba)
+  ("Fix GHSA-fm2m-fjf5-v3cp: RCE via corrupted session file"), as a second, separate patch.
 - The patches are made against the vendor source trees. They do not apply to the plain `php-5.4.16` /
   `php-5.3.3` release tarballs, which lack the vendor's later security fixes in the same code
   (for example CVE-2015-4024 in multipart header parsing).
 
 | Distribution | Vendor package | Fixed package from this project |
 |---|---|---|
-| RHEL / CentOS / Oracle Linux / Scientific Linux 7 | `php-5.4.16-48.el7` | `php-5.4.16-48.el7.php2shell.1` |
-| RHEL / CentOS / Oracle Linux 6 | `php-5.3.3-50.el6_10` | `php-5.3.3-50.el6_10.php2shell.1` |
+| RHEL / CentOS / Oracle Linux / Scientific Linux 7 | `php-5.4.16-48.el7` | `php-5.4.16-48.el7.php2shell.2` |
+| RHEL / CentOS / Oracle Linux 6 | `php-5.3.3-50.el6_10` | `php-5.3.3-50.el6_10.php2shell.2` |
 
-The release suffix sorts above the vendor package, and below any future vendor erratum
-(for example `48.el7_9.1`), so an official fix, if one ever appears, replaces this one with a normal update.
+Release 1 (`.php2shell.1`) has the php2shell fix only.
+
+The release suffix sorts above the vendor package, and below vendor errata, so an official fix replaces
+this one with a normal update. This now matters on EL7: the extended support updates of Red Hat
+(`php-5.4.16-48.el7_9.1`) and Oracle (`php-5.4.16-48.0.1.el7`) sort above release 2. If your system gets
+updates from such a channel, `yum update` replaces release 2 with the vendor package. That package fixes
+CVE-2026-109619, but as of 19 Nov 2026 not CVE-2026-126714 (phpAfterShell).
 
 ### How serious is this on PHP 5?
 
@@ -56,8 +68,10 @@ The two CVEs affect the PHP 5 packages differently (status of 23 Oct 2026):
   CVE-2026-109619 — In a default configuration, the version of PHP in use is vulnerable". The known path is
   session upload progress, which PHP 5.4 has (enabled by default) and PHP 5.3 does not. CrowdStrike also
   dates this path back to PHP 5.4. Red Hat's
-  [CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109619.json) data says the
-  same since 23 Oct: RHEL 7 is affected and no fix is available.
+  [CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109619.json) data agrees that
+  RHEL 7 is affected. Red Hat fixed it for RHEL 7 extended support customers on 23 Oct
+  ([RHSA-2026:88693](https://access.redhat.com/errata/RHSA-2026:88693)), and Oracle for Oracle Linux 7
+  extended support on 29 Oct ([ELSA-2026-88693](https://linux.oracle.com/errata/ELSA-2026-88693.html)).
 
 Red Hat's VEX data also lists RHEL 6 as affected by both CVEs, with the remark "Out of support scope": Red Hat
 no longer assesses RHEL 6. The table above for PHP 5.3 follows from the code: it has neither the code of
@@ -74,6 +88,43 @@ in case another way to reach it exists in PHP 5.
 
 If you cannot install a package, `session.upload_progress.enabled = 0` in `php.ini` (not with `ini_set()`),
 followed by a restart of every process that runs PHP, closes the known path of CVE-2026-109619.
+
+### phpAfterShell (CVE-2026-126714) and CVE-2026-115560
+
+On 19 Nov 2026 PHP fixed two more session issues in 8.2.36, 8.3.37, 8.4.28 and 8.5.13, both CVSS 4.0 9.2.
+There are no official backports for 7.4, 8.0 or 8.1 this time.
+
+| | PHP 5.4 (EL7) | PHP 5.3 (EL6) |
+|---|---|---|
+| CVE-2026-126714 (phpAfterShell) | affected; fixed in release 2 | affected; fixed in release 2 |
+| CVE-2026-115560 | known path closed since release 1 (upload progress disabled) | not affected (no upload progress) |
+
+- **CVE-2026-126714, "phpAfterShell"**, "Partially overwritten session files can lead to remote code execution"
+  ([GHSA-fm2m-fjf5-v3cp](https://github.com/php/php-src/security/advisories/GHSA-fm2m-fjf5-v3cp)). The name comes
+  from depthfirst, who found the issue ([research](https://depthfirst.com/research/phpaftershell)). The built-in
+  `files` session handler rewrote a session file in place and truncated it only when the new data was shorter.
+  If such a write is interrupted, the file can keep a mix of old and new session data. PHP says that "the affected
+  code has been present since PHP 4.1.0", and the PHP 5.3 / 5.4 vendor code is the same. Exploitation "requires
+  attacker influence over the session data, an interruption at a useful point in the write, and an application
+  with a suitable deserialization gadget chain." The publicly described attack path gets the data into the
+  session through session upload progress, which release 1 already disables on PHP 5.4 and which PHP 5.3 does not
+  have. But PHP also notes that disabling upload progress "does not fix applications that independently store
+  attacker-controlled session data". Release 2 therefore adds the upstream fix: the session file is always
+  truncated before it is written.
+- **CVE-2026-115560**, "Session serializer mismatch can lead to remote code execution"
+  ([GHSA-658j-r8rw-q6mx](https://github.com/php/php-src/security/advisories/GHSA-658j-r8rw-q6mx)). This is an
+  issue of session upload progress, which "was introduced in PHP 5.4.0". Release 1 disables it in the code, so
+  this project needs no new change for it. Red Hat's
+  [VEX data](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-115560.json) explains the same
+  for its own updates: they "unconditionally disabled the Session Upload Progress functionality", which "provides
+  a mitigation for this issue as well".
+
+PHP adds that "other session storage implementations are not affected by this specific file-write defect".
+
+Some reports say that phpAfterShell bypasses the php2shell fix. That refers to the PHP 8.2–8.5 releases of
+21 Oct 2026, which fixed php2shell but kept session upload progress enabled by default; depthfirst lists them as
+still affected. Release 1 of this project disables session upload progress in PHP 5.4, so the published path,
+which needs it, is closed there. Release 2 also fixes the file write itself.
 
 ## Install
 
@@ -102,9 +153,11 @@ with `yum localinstall`.
 sudo ./tools/check-patched.sh
 ```
 
-It lists every installed PHP 5 package as `FIXED` or `VULNERABLE` and checks that the PHP CLI runs the fixed
-code. Run as root, it also lists every running process that still uses the replaced PHP files (mod_php in
-any httpd instance, php-fpm, php-cgi, PHP CLI daemons), so you know what to restart.
+It lists every installed PHP 5 package as `FIXED` (release 2), `OUTDATED` (release 1: php2shell fixed, but
+not phpAfterShell) or `VULNERABLE`, and checks that the PHP CLI runs the fixed code. Run as root, it also
+lists every running process that still uses the replaced PHP files (mod_php in any httpd instance, php-fpm,
+php-cgi, PHP CLI daemons), so you know what to restart. Exit status: 0 fixed, 1 vulnerable, 2 restart needed,
+3 release 1 installed.
 
 ## Behaviour changes and known limitations
 
@@ -115,6 +168,9 @@ The fix follows the official minimal backport, which favours safety over gracefu
   Apache / php-fpm start a new worker. Shutdown functions do not run, and temporary files of uploads in that
   request are not removed — `tmpwatch` (EL6) and `systemd-tmpfiles` (EL7) clean them from `/tmp` over time.
 - **Session upload progress is disabled** (PHP 5.4; PHP 5.3 does not have it).
+- **Session files are always truncated before they are written** (release 2, phpAfterShell fix). If
+  truncation fails, PHP logs
+  `ftruncate() failed: ...` and the session data of that request is not saved, as in the upstream fix.
 - **Multipart requests:** only the `Content-Disposition` and `Content-Type` headers of each part are kept
   (the only ones PHP uses), and the new `php.ini` directive `max_multipart_body_parts` limits the number of
   parts (default `-1` = `max_input_vars` + `max_file_uploads`).
@@ -125,8 +181,8 @@ This is a minimal mitigation of the published attack paths, not a full security 
 
 ## How it was verified
 
-- Built from the vendor source RPMs (pinned SHA-256 in `build/build.sh`); the spec change is 8 lines
-  (`spec/*/php.spec.diff`).
+- Built from the vendor source RPMs (pinned SHA-256 in `build/build.sh`); the spec change is 15 added lines
+  and one changed line (`spec/*/php.spec.diff`).
 - The PHP test suite (`make test`, run during the RPM build) was compared with an unmodified rebuild of the
   same vendor package. The only new failures are expected:
   the session upload progress tests (feature disabled) and `tests/lang/bug45392.phpt` (the fatal error
@@ -141,13 +197,19 @@ This is a minimal mitigation of the published attack paths, not a full security 
   (`DirectoryIterator_getOwner/getGroup_basic`) also fail, and `time_sleep_until_basic` is timing-sensitive.
   None of them touches code changed by the patch.
 
+- Release 2 (phpAfterShell fix) has exactly the same failed tests as release 1 on both EL6 and EL7, including
+  the session tests. The release 2 binaries (`libphp5.so`, `php`) contain the new code, and the release 1
+  binaries do not.
+
 - The PHP 5.4 patch was compared with an independent port of the same fix for Amazon Linux 2's `php-5.4.16`:
   the core changes are identical. The differences are listed in [docs/ALTERNATIVES.md](docs/ALTERNATIVES.md).
 - No exploit code was written or used. Please review the patch against the upstream commit yourself.
 
 ## Alternatives
 
-- **Commercial:** TuxCare Extended Lifecycle Support shipped fixed packages for EL6 and EL7 on 21 Oct 2026.
+- **Commercial:** TuxCare Extended Lifecycle Support shipped php2shell fixes for EL6 and EL7 on 21 Oct 2026.
+  Red Hat (RHEL 7 ELS) and Oracle (Oracle Linux 7 Extended Support) fixed CVE-2026-109619 for their extended
+  support customers on 23 and 29 Oct.
 - **Other free patches:** mostly for the upstream 5.4.45 / 5.3.29 sources, one for Amazon Linux, and source
   patches for the same EL6 / EL7 vendor trees.
 
@@ -180,7 +242,7 @@ The key is in this repository (`RPM-GPG-KEY-php2shell-eol-backport`) and on `key
 ## Repository layout
 
 ```
-patches/el7, patches/el6   the fix, as a patch against the vendor source tree
+patches/el7, patches/el6   the fixes, as patches against the vendor source tree (one per fix)
 spec/el7, spec/el6         vendor spec files with the patch added, and their diffs
 build/                     reproducible container build
 tools/check-patched.sh     check an installed system
@@ -194,7 +256,7 @@ Open an issue for bugs. For a security problem in the patch itself, see [SECURIT
 
 ## Credits and license
 
-- The fix is by the PHP security team; this project only ports it. See the GitHub advisories for the
+- The fixes are by the PHP project; this project only ports them. See the GitHub advisories for the
   reporters.
 - Patches: PHP License 3.01 (`LICENSE.PHP`), like the code they change. Build scripts and tools: MIT
   (`LICENSE`). Spec files are derived from the Red Hat / Fedora packaging (MIT).

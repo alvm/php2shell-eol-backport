@@ -1,10 +1,13 @@
 #!/bin/bash
 # Check whether the installed PHP 5.x packages carry the php2shell-eol-backport
-# fix for CVE-2026-109618 / CVE-2026-109619 (EL6 / EL7).
+# fixes (EL6 / EL7): CVE-2026-109618 / CVE-2026-109619 since .php2shell.1,
+# CVE-2026-126714 (phpAfterShell) since .php2shell.2.
 #
 # Exit status: 0 = fixed (or no PHP 5.x installed), 1 = vulnerable package found,
-#              2 = fixed, but a running process still uses the old code.
+#              2 = fixed, but a running process still uses the old code,
+#              3 = .php2shell.1 installed: CVE-2026-126714 (phpAfterShell) is not fixed yet.
 status=0
+outdated=0
 
 pkgs=$(rpm -qa --qf '%{NAME} %{VERSION}-%{RELEASE} %{SOURCERPM}\n' | awk '$3 ~ /^php-5\./')
 if [ -z "$pkgs" ]; then
@@ -13,8 +16,12 @@ if [ -z "$pkgs" ]; then
 fi
 
 while read -r name vr _; do
-    if rpm -q --changelog "$name" | grep -q 'CVE-2026-109618'; then
+    changelog=$(rpm -q --changelog "$name")
+    if echo "$changelog" | grep -q 'CVE-2026-126714'; then
         echo "FIXED       $name-$vr"
+    elif echo "$changelog" | grep -q 'CVE-2026-109618'; then
+        echo "OUTDATED    $name-$vr: php2shell fixed, phpAfterShell (CVE-2026-126714) not fixed, update to .php2shell.2"
+        outdated=1
     else
         echo "VULNERABLE  $name-$vr"
         status=1
@@ -55,4 +62,7 @@ if [ "$status" -eq 0 ]; then
     fi
 fi
 
+if [ "$status" -eq 0 ] && [ "$outdated" -eq 1 ]; then
+    status=3
+fi
 exit $status

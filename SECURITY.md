@@ -24,7 +24,8 @@ This is a volunteer project. You can expect an acknowledgement within 7 days. A 
 ## Out of scope
 
 - Other vulnerabilities of PHP 5.3 / 5.4 that this project does not claim to fix. PHP 5 is end-of-life, and this
-  project fixes only CVE-2026-109618 and CVE-2026-109619. Report new PHP vulnerabilities to the
+  project fixes only CVE-2026-109618 / CVE-2026-109619 (php2shell) and CVE-2026-126714 (phpAfterShell);
+  CVE-2026-115560 is covered by the disabled session upload progress. Report new PHP vulnerabilities to the
   [PHP project](https://github.com/php/php-src/security) and to your OS vendor.
 - The general risk of running an end-of-life PHP version.
 

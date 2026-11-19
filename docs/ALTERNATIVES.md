@@ -1,15 +1,20 @@
 # Alternatives and how this project compares
 
-Status as of 23 October 2026. If something here is out of date or wrong, please open an issue.
+Vendor status as of 19 November 2026 (CIQ: 23 October); community projects as of 23 October 2026. If something
+here is out of date or wrong, please open an issue.
 
 ## Vendors: the stock EL6 / EL7 packages
 
 | Vendor | EL7 `php-5.4.16` | EL6 `php-5.3.3` | Notes |
 |---|---|---|---|
-| Red Hat | no update | no update | [RHSB-2026-013](https://access.redhat.com/security/vulnerabilities/RHSB-2026-013) (22 Oct): RHEL 7 is "Only affected by CVE-2026-109619 — In a default configuration, the version of PHP in use is vulnerable"; the CVE-2026-109618 code is not present. The [CSAF VEX](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-109619.json) data agrees since 23 Oct (RHEL 7: CVE-2026-109619 affected, "none available"). RHEL 6: affected by both, "Out of support scope" |
-| Oracle | no update | no update | [errata](https://linux.oracle.com/cve/CVE-2026-109618.html) only for Oracle Linux 8, 9 and 10 |
-| TuxCare ELS (commercial) | fixed on 21 Oct 2026, `php-5.4.16-48.el7.tuxcare.els21` ([CLSA-2026:1792611997](https://errata.tuxcare.com/els_os/rhel7els/CLSA-2026-1792611997.html)) | fixed on 21 Oct 2026, `php-5.3.3-50.el6_10.tuxcare.ol.els27` ([CLSA-2026:1792611737](https://errata.tuxcare.com/els_os/oraclelinux6els/CLSA-2026-1792611737.html)) | subscription; builds for CentOS, RHEL and Oracle Linux |
+| Red Hat | RHEL 7 extended support (ELS) only: `php-5.4.16-48.el7_9.1`, [RHSA-2026:88693](https://access.redhat.com/errata/RHSA-2026:88693) (23 Oct), fixes CVE-2026-109619 | no update | [RHSB-2026-013](https://access.redhat.com/security/vulnerabilities/RHSB-2026-013) (22 Oct): RHEL 7 is "Only affected by CVE-2026-109619 — In a default configuration, the version of PHP in use is vulnerable"; the CVE-2026-109618 code is not present. RHEL 6: affected by both, "Out of support scope". CVE-2026-126714: the [VEX data](https://security.access.redhat.com/data/csaf/v2/vex/2026/cve-2026-126714.json) lists RHEL 7 as affected with no fix available ([Bugzilla 2576606](https://bugzilla.redhat.com/show_bug.cgi?id=2576606)) |
+| Oracle | Oracle Linux 7 Extended Support only: `php-5.4.16-48.0.1.el7`, [ELSA-2026-88693](https://linux.oracle.com/errata/ELSA-2026-88693.html) (29 Oct), "Backport fix for CVE-2026-109619" | no update | the OL7 update is in the `ol7_x86_64_latest_ELS` channel, not on the public yum server (the source RPM is public). CVE-2026-126714: nothing published |
+| TuxCare ELS (commercial) | php2shell fixed on 21 Oct 2026, `php-5.4.16-48.el7.tuxcare.els21` ([CLSA-2026:1792611997](https://errata.tuxcare.com/els_os/rhel7els/CLSA-2026-1792611997.html)) | php2shell fixed on 21 Oct 2026, `php-5.3.3-50.el6_10.tuxcare.ol.els27` ([CLSA-2026:1792611737](https://errata.tuxcare.com/els_os/oraclelinux6els/CLSA-2026-1792611737.html)) | subscription; builds for CentOS, RHEL and Oracle Linux. For CVE-2026-126714 see their [CVE tracker](https://cve.tuxcare.com/els/cve/CVE-2026-126714) |
 | CIQ Bridge (commercial, CentOS 7) | no fix planned | — | [KB article](https://kb.ciq.com/article/security-advisories/cve-php2shell-mitigation): "No patched PHP package will be available for Bridge" |
+
+The Red Hat and Oracle EL7 updates sort above this project's packages, so `yum update` replaces
+`.php2shell.N` with them on a system that gets updates from these extended support channels. Neither fixes
+CVE-2026-126714 (phpAfterShell) yet.
 
 If you already have a TuxCare subscription, use their packages: they come with vendor support and cover other
 vulnerabilities too. TuxCare describes the same design as this project ("disable the session upload progress
