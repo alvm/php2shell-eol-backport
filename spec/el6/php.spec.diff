@@ -5,11 +5,11 @@
  Name: php
  Version: 5.3.3
 -Release: 50%{?dist}
-+Release: 50%{?dist}.php2shell.2
++Release: 50%{?dist}.php2shell.3
  License: PHP
  Group: Development/Languages
  URL: http://www.php.net/
-@@ -161,6 +161,12 @@
+@@ -161,6 +161,26 @@
  Patch272: php-5.3.3-CVE-2015-4644.patch
  Patch273: php-5.3.3-CVE-2016-5385.patch
  Patch274: php-5.3.3-CVE-2019-11043.patch
@@ -19,22 +19,55 @@
 +# php2shell-eol-backport: fix for CVE-2026-126714 (phpAfterShell): the files session
 +# handler always truncates the session file before writing; ported from php-src 41c0941ae27
 +Patch9002: php-5.3.3-50.el6_10-cve-2026-126714.patch
++# php2shell-eol-backport: fix for CVE-2026-129496 (timezone cache use-after-free): the
++# file-based error log uses UTC outside a started request; ported from php-src cb20015e045
++Patch9003: php-5.3.3-50.el6_10-cve-2026-129496.patch
++# php2shell-eol-backport: high / medium fixes of PHP 8.2.36 (19 Nov 2026), ported from php-src
++# CVE-2026-128064, mixed-case HTTPS / FTPS URLs use TLS (9c0b44ffd66)
++Patch9004: php-5.3.3-50.el6_10-cve-2026-128064.patch
++# CVE-2026-128090, no keyless PHAR signature when <phar>.pubkey exists (db90b7ba0db)
++Patch9005: php-5.3.3-50.el6_10-cve-2026-128090.patch
++# CVE-2026-129292, escape all request fields of the FPM full status (37abd0a7f7b)
++Patch9006: php-5.3.3-50.el6_10-cve-2026-129292.patch
++# CVE-2026-129538, php-cgi PATH_INFO underflow (1e109bfbd2f)
++Patch9007: php-5.3.3-50.el6_10-cve-2026-129538.patch
++# CVE-2026-15353, SOAP out-of-bounds read on an empty arraySize (382d2494805)
++Patch9008: php-5.3.3-50.el6_10-cve-2026-15353.patch
  
  
  BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-@@ -632,6 +638,8 @@
+@@ -632,6 +652,14 @@
  %patch272 -p1 -b .cve4644
  %patch273 -p1 -b .cve5385
  %patch274 -p1 -b .cve11043
 +%patch9001 -p1 -b .php2shell
 +%patch9002 -p1 -b .cve126714
++%patch9003 -p1 -b .cve129496
++%patch9004 -p1 -b .cve128064
++%patch9005 -p1 -b .cve128090
++%patch9006 -p1 -b .cve129292
++%patch9007 -p1 -b .cve129538
++%patch9008 -p1 -b .cve15353
  
  # Prevent %%doc confusion over LICENSE files
  cp Zend/LICENSE Zend/ZEND_LICENSE
-@@ -1119,6 +1127,14 @@
+@@ -1119,6 +1147,27 @@
  
  
  %changelog
++* Fri Nov 20 2026 Oleksii Molchanov <2106429+alvm@users.noreply.github.com> - 5.3.3-50.php2shell.3
++- Fix CVE-2026-129496 (timezone cache use-after-free): the timestamp of the
++  file-based error log is in UTC outside a started request (port of php-src
++  cb20015e045)
++- Fix CVE-2026-128064: mixed-case HTTPS:// and FTPS:// URLs use TLS (9c0b44ffd66)
++- Fix CVE-2026-128090: refuse a keyless PHAR signature when <phar>.pubkey
++  exists (db90b7ba0db)
++- Fix CVE-2026-129292: escape all request fields of the FPM full status
++  page (37abd0a7f7b)
++- Fix CVE-2026-129538: php-cgi PATH_INFO underflow (1e109bfbd2f)
++- Fix CVE-2026-15353: SOAP out-of-bounds read on an empty arraySize
++  (382d2494805)
++
 +* Thu Nov 19 2026 Oleksii Molchanov <2106429+alvm@users.noreply.github.com> - 5.3.3-50.php2shell.2
 +- Fix CVE-2026-126714 (phpAfterShell): the files session handler always
 +  truncates the session file before writing it (port of php-src 41c0941ae27)

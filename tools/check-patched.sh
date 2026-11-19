@@ -1,13 +1,17 @@
 #!/bin/bash
 # Check whether the installed PHP 5.x packages carry the php2shell-eol-backport
 # fixes (EL6 / EL7): CVE-2026-109618 / CVE-2026-109619 since .php2shell.1,
-# CVE-2026-126714 (phpAfterShell) since .php2shell.2.
+# CVE-2026-126714 (phpAfterShell) since .php2shell.2, the other applicable issues of
+# 19 Nov 2026 (CVE-2026-129496, -128064, -128090, -129292, -129538, -15353) since .php2shell.3.
 #
 # Exit status: 0 = fixed (or no PHP 5.x installed), 1 = vulnerable package found,
 #              2 = fixed, but a running process still uses the old code,
-#              3 = .php2shell.1 installed: CVE-2026-126714 (phpAfterShell) is not fixed yet.
+#              3 = an older .php2shell.N release is installed: some fixes are missing.
 status=0
 outdated=0
+# CVEs fixed after release 1, in release order
+later_fixes="CVE-2026-126714:phpAfterShell CVE-2026-129496:timezone-cache CVE-2026-128064:https-case
+CVE-2026-128090:phar-signature CVE-2026-129292:fpm-status-xss CVE-2026-129538:cgi-path-info CVE-2026-15353:soap-array"
 
 pkgs=$(rpm -qa --qf '%{NAME} %{VERSION}-%{RELEASE} %{SOURCERPM}\n' | awk '$3 ~ /^php-5\./')
 if [ -z "$pkgs" ]; then
@@ -17,11 +21,17 @@ fi
 
 while read -r name vr _; do
     changelog=$(rpm -q --changelog "$name")
-    if echo "$changelog" | grep -q 'CVE-2026-126714'; then
-        echo "FIXED       $name-$vr"
-    elif echo "$changelog" | grep -q 'CVE-2026-109618'; then
-        echo "OUTDATED    $name-$vr: php2shell fixed, phpAfterShell (CVE-2026-126714) not fixed, update to .php2shell.2"
-        outdated=1
+    if echo "$changelog" | grep -q 'CVE-2026-109618'; then
+        missing=""
+        for f in $later_fixes; do
+            echo "$changelog" | grep -q "${f%%:*}" || missing="$missing, ${f#*:} (${f%%:*})"
+        done
+        if [ -z "$missing" ]; then
+            echo "FIXED       $name-$vr"
+        else
+            echo "OUTDATED    $name-$vr: not fixed: ${missing#, }; update to the latest .php2shell.N"
+            outdated=1
+        fi
     else
         echo "VULNERABLE  $name-$vr"
         status=1

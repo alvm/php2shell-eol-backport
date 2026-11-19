@@ -1,11 +1,12 @@
 # php2shell-eol-backport
 
 Unofficial backport of the official fixes for **CVE-2026-109618** and **CVE-2026-109619** ("php2shell") and,
-since release 2, **CVE-2026-126714** ("phpAfterShell") to the end-of-life PHP packages of
-**Enterprise Linux 6 and 7**: `php-5.3.3` (RHEL / CentOS / Oracle Linux 6) and `php-5.4.16`
-(RHEL / CentOS / Oracle Linux / Scientific Linux 7). Which of these CVEs affect PHP 5 is explained in
-[How serious is this on PHP 5?](#how-serious-is-this-on-php-5) and
-[phpAfterShell (CVE-2026-126714) and CVE-2026-115560](#phpaftershell-cve-2026-126714-and-cve-2026-115560).
+since release 2, **CVE-2026-126714** ("phpAfterShell") and, since release 3, all other issues of the PHP security
+releases of 19 November 2026 that apply to PHP 5 to the end-of-life PHP packages of **Enterprise Linux 6 and 7**:
+`php-5.3.3` (RHEL / CentOS / Oracle Linux 6) and `php-5.4.16` (RHEL / CentOS / Oracle Linux / Scientific Linux 7).
+Which of these CVEs affect PHP 5 is explained in [How serious is this on PHP 5?](#how-serious-is-this-on-php-5),
+[phpAfterShell (CVE-2026-126714) and CVE-2026-115560](#phpaftershell-cve-2026-126714-and-cve-2026-115560) and
+[All advisories of 19 November 2026](#all-advisories-of-19-november-2026).
 
 PHP fixed php2shell on 21 Oct 2026 in 8.2.35, 8.3.36, 8.4.27 and 8.5.12, and published source backports for
 7.4, 8.0 and 8.1. Nothing was released for PHP 5. Red Hat and Oracle later shipped a fix for CVE-2026-109619 in
@@ -29,22 +30,28 @@ gives you rebuilt vendor packages with a port of the official minimal fix.
   ("phpAfterShell", CVSS 4.0 9.2): a port of php-src commit
   [41c0941ae27](https://github.com/php/php-src/commit/41c0941ae27d1033129e0e09ce3af034ffee86ba)
   ("Fix GHSA-fm2m-fjf5-v3cp: RCE via corrupted session file"), as a second, separate patch.
+- Release 3 adds the six other issues of 19 November 2026 that apply to PHP 5, one patch each, ported from the
+  upstream commits: CVE-2026-129496 (critical, timezone cache use-after-free), CVE-2026-128064 (high, mixed-case
+  HTTPS / FTPS URLs sent in plaintext), CVE-2026-128090 (high, PHAR signature downgrade), CVE-2026-129292
+  (medium, PHP-FPM status page XSS), CVE-2026-129538 (medium, php-cgi `PATH_INFO`) and CVE-2026-15353 (medium,
+  SOAP out-of-bounds read). The full review of all 17 advisories, with the reasons why the others do not apply,
+  is in [docs/REVIEW-PHP-2026-11-19.md](docs/REVIEW-PHP-2026-11-19.md).
 - The patches are made against the vendor source trees. They do not apply to the plain `php-5.4.16` /
   `php-5.3.3` release tarballs, which lack the vendor's later security fixes in the same code
   (for example CVE-2015-4024 in multipart header parsing).
 
 | Distribution | Vendor package | Fixed package from this project |
 |---|---|---|
-| RHEL / CentOS / Oracle Linux / Scientific Linux 7 | `php-5.4.16-48.el7` | `php-5.4.16-48.el7.php2shell.2` |
-| RHEL / CentOS / Oracle Linux 6 | `php-5.3.3-50.el6_10` | `php-5.3.3-50.el6_10.php2shell.2` |
+| RHEL / CentOS / Oracle Linux / Scientific Linux 7 | `php-5.4.16-48.el7` | `php-5.4.16-48.el7.php2shell.3` |
+| RHEL / CentOS / Oracle Linux 6 | `php-5.3.3-50.el6_10` | `php-5.3.3-50.el6_10.php2shell.3` |
 
-Release 1 (`.php2shell.1`) has the php2shell fix only.
+Release 1 (`.php2shell.1`) has the php2shell fix only, release 2 (`.php2shell.2`) adds phpAfterShell.
 
 The release suffix sorts above the vendor package, and below vendor errata, so an official fix replaces
 this one with a normal update. This now matters on EL7: the extended support updates of Red Hat
-(`php-5.4.16-48.el7_9.1`) and Oracle (`php-5.4.16-48.0.1.el7`) sort above release 2. If your system gets
-updates from such a channel, `yum update` replaces release 2 with the vendor package. That package fixes
-CVE-2026-109619, but as of 19 Nov 2026 not CVE-2026-126714 (phpAfterShell).
+(`php-5.4.16-48.el7_9.1`) and Oracle (`php-5.4.16-48.0.1.el7`) sort above this project's packages. If your
+system gets updates from such a channel, `yum update` replaces them with the vendor package. That package fixes
+CVE-2026-109619, but as of 20 Nov 2026 not CVE-2026-126714 (phpAfterShell) or the issues fixed in release 3.
 
 ### How serious is this on PHP 5?
 
@@ -126,6 +133,37 @@ Some reports say that phpAfterShell bypasses the php2shell fix. That refers to t
 still affected. Release 1 of this project disables session upload progress in PHP 5.4, so the published path,
 which needs it, is closed there. Release 2 also fixes the file write itself.
 
+### All advisories of 19 November 2026
+
+PHP published 17 advisories with these releases. We checked each of them against the vendor code of both
+packages ([full review](docs/REVIEW-PHP-2026-11-19.md)):
+
+| Result for PHP 5.3 / 5.4 | CVEs |
+|---|---|
+| fixed in release 2 | CVE-2026-126714 (phpAfterShell) |
+| fixed in release 3 | CVE-2026-129496, CVE-2026-128064, CVE-2026-128090, CVE-2026-129292, CVE-2026-129538, CVE-2026-15353 |
+| closed by release 1 (EL7) / not present (EL6) | CVE-2026-115560 |
+| not applicable: the code does not exist in PHP 5 | CVE-2026-129289, CVE-2026-129481, CVE-2026-129182, CVE-2026-129474, CVE-2026-127960, CVE-2026-129291, CVE-2026-129506, CVE-2026-129438, CVE-2026-129501 |
+
+Red Hat's bulletin [RHSB-2026-020](https://access.redhat.com/security/vulnerabilities/RHSB-2026-020) covers the
+seven critical ones. Two of them need a closer look on PHP 5:
+
+- **CVE-2026-129496** ([GHSA-gr4f-wgx5-jpfv](https://github.com/php/php-src/security/advisories/GHSA-gr4f-wgx5-jpfv)).
+  When PHP writes a diagnostic to a file-based `error_log` during process startup, it can keep a reference to
+  a timezone cache in memory that is freed at the end of startup; an early diagnostic of a later request can
+  then use the freed memory. PHP says that the affected code "has been present since PHP 5.3.18 and 5.4.8", and
+  that "an earlier form of it was present in" 5.3.0 to 5.3.8. The vendor code of both packages has the same
+  sequence: the log timestamp is formatted in local time during startup, the startup memory is released, and
+  request input is processed before the date extension resets the reference. PHP reports code execution in
+  Apache mod_php and PHP-FPM under additional conditions. The trigger needs PHP errors written to a log
+  file and a diagnostic during PHP startup; `error_log = syslog` avoids the demonstrated trigger. Release 3 ports
+  the upstream fix: outside a started request the log timestamp is in UTC, so the cache is not created then.
+- **CVE-2026-129289** ([GHSA-qc49-hpvq-g2w6](https://github.com/php/php-src/security/advisories/GHSA-qc49-hpvq-g2w6)).
+  PHP says that the affected code "has been present since PHP 5.6.0", which made reading `php://input` lazy.
+  In PHP 5.3 / 5.4, request shutdown always reads and discards a request body that was not read in full, so
+  no unread bytes can stay on a FastCGI connection. Red Hat's VEX data lists RHEL 7 as affected; the code does
+  not support that, so this project does not change it.
+
 ## Install
 
 From the signed yum repository on GitHub Pages:
@@ -153,11 +191,11 @@ with `yum localinstall`.
 sudo ./tools/check-patched.sh
 ```
 
-It lists every installed PHP 5 package as `FIXED` (release 2), `OUTDATED` (release 1: php2shell fixed, but
-not phpAfterShell) or `VULNERABLE`, and checks that the PHP CLI runs the fixed code. Run as root, it also
+It lists every installed PHP 5 package as `FIXED` (latest release), `OUTDATED` (an older release, with the
+fixes it lacks) or `VULNERABLE`, and checks that the PHP CLI runs the fixed code. Run as root, it also
 lists every running process that still uses the replaced PHP files (mod_php in any httpd instance, php-fpm,
 php-cgi, PHP CLI daemons), so you know what to restart. Exit status: 0 fixed, 1 vulnerable, 2 restart needed,
-3 release 1 installed.
+3 older release installed.
 
 ## Behaviour changes and known limitations
 
@@ -171,6 +209,14 @@ The fix follows the official minimal backport, which favours safety over gracefu
 - **Session files are always truncated before they are written** (release 2, phpAfterShell fix). If
   truncation fails, PHP logs
   `ftruncate() failed: ...` and the session data of that request is not saved, as in the upstream fix.
+- **Error log timestamps outside a request are in UTC** (release 3, CVE-2026-129496 fix). A message that PHP
+  writes to a file-based `error_log` during startup or shutdown, outside a started request, shows the time
+  in UTC (on EL7 with the `UTC` suffix); messages of requests keep the local time zone, as in the upstream fix.
+- **`HTTPS://` and `FTPS://` URLs in any letter case use TLS** (release 3). Before, only lowercase schemes did.
+- **A phar is rejected when `<phar>.pubkey` exists but its signature does not use OpenSSL** (release 3), with the
+  error "openssl public key found, but the signature does not use openssl".
+- **The PHP-FPM status page escapes all request fields** in its HTML and XML output (release 3); the JSON output
+  is unchanged.
 - **Multipart requests:** only the `Content-Disposition` and `Content-Type` headers of each part are kept
   (the only ones PHP uses), and the new `php.ini` directive `max_multipart_body_parts` limits the number of
   parts (default `-1` = `max_input_vars` + `max_file_uploads`).
@@ -181,7 +227,7 @@ This is a minimal mitigation of the published attack paths, not a full security 
 
 ## How it was verified
 
-- Built from the vendor source RPMs (pinned SHA-256 in `build/build.sh`); the spec change is 15 added lines
+- Built from the vendor source RPMs (pinned SHA-256 in `build/build.sh`); the spec change is 46 added lines
   and one changed line (`spec/*/php.spec.diff`).
 - The PHP test suite (`make test`, run during the RPM build) was compared with an unmodified rebuild of the
   same vendor package. The only new failures are expected:
@@ -200,6 +246,13 @@ This is a minimal mitigation of the published attack paths, not a full security 
 - Release 2 (phpAfterShell fix) has exactly the same failed tests as release 1 on both EL6 and EL7, including
   the session tests. The release 2 binaries (`libphp5.so`, `php`) contain the new code, and the release 1
   binaries do not.
+
+- Release 3 has exactly the same failed tests as release 2 on both EL6 and EL7. In clean containers, an
+  update from release 2 to release 3 showed the changed behaviour directly: a PHP startup warning in a file-based
+  error log changed from local time to UTC while messages of requests stayed in local time (CVE-2026-129496), a
+  request to an `HTTPS://` URL changed from plaintext `GET` to a TLS handshake (CVE-2026-128064), and a SHA1-signed
+  phar next to a `.pubkey` file changed from opened to rejected (CVE-2026-128090). The other three fixes were
+  checked by code review against the upstream commits and by the test suite.
 
 - The PHP 5.4 patch was compared with an independent port of the same fix for Amazon Linux 2's `php-5.4.16`:
   the core changes are identical. The differences are listed in [docs/ALTERNATIVES.md](docs/ALTERNATIVES.md).
@@ -247,6 +300,7 @@ spec/el7, spec/el6         vendor spec files with the patch added, and their dif
 build/                     reproducible container build
 tools/check-patched.sh     check an installed system
 docs/ALTERNATIVES.md       vendor status, other projects, comparison
+docs/REVIEW-PHP-2026-11-19.md  review of all PHP advisories of 19 November 2026 for PHP 5
 SECURITY.md                how to report a security problem
 ```
 
