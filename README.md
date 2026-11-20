@@ -1,5 +1,7 @@
 # php2shell-eol-backport
 
+![php2shell-eol-backport: fixes for php2shell, phpAfterShell and the other PHP vulnerabilities of 19 Nov 2026 for the PHP 5.4 / 5.3 packages of EL7 / EL6](docs/social-preview/social-preview.png)
+
 Unofficial backport of the official fixes for **CVE-2026-109618** and **CVE-2026-109619** ("php2shell") and,
 since release 2, **CVE-2026-126714** ("phpAfterShell") and, since release 3, all other issues of the PHP security
 releases of 19 November 2026 that apply to PHP 5 to the end-of-life PHP packages of **Enterprise Linux 6 and 7**:
