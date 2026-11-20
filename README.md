@@ -301,6 +301,7 @@ build/                     reproducible container build
 tools/check-patched.sh     check an installed system
 docs/ALTERNATIVES.md       vendor status, other projects, comparison
 docs/REVIEW-PHP-2026-11-19.md  review of all PHP advisories of 19 November 2026 for PHP 5
+docs/social-preview/       the GitHub social preview image and its HTML source
 SECURITY.md                how to report a security problem
 ```
 
