@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>php2shell-eol-backport: fixes for php2shell (CVE-2026-109618 / CVE-2026-109619) and phpAfterShell (CVE-2026-126714) on EL6 / EL7</title>
-<meta name="description" content="Unofficial fixed php-5.4.16 (RHEL, CentOS, Oracle Linux, Scientific Linux 7) and php-5.3.3 (EL6) packages for CVE-2026-109618 and CVE-2026-109619 (php2shell) and CVE-2026-126714 (phpAfterShell). Signed yum repository.">
+<meta name="description" content="Unofficial fixed php-5.4.16 (RHEL, CentOS, Oracle Linux, Scientific Linux 7) and php-5.3.3 (EL6) packages for CVE-2026-109618 and CVE-2026-109619 (php2shell), CVE-2026-126714 (phpAfterShell) and CVE-2026-129496. Signed yum repository.">
 <style>
   :root { --bg: #ffffff; --fg: #1f2328; --muted: #59636e; --code: #f6f8fa; --border: #d1d9e0; --accent: #1a7f37; color-scheme: light dark; }
   @media (prefers-color-scheme: dark) { :root { --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --code: #161b22; --border: #3d444d; --accent: #3fb950; } }
@@ -23,13 +23,24 @@
 <body>
 <main>
 <h1>php2shell-eol-backport</h1>
-<p class="lead">Unofficial fixes for CVE-2026-109618 and CVE-2026-109619 ("php2shell") and, since release 2, CVE-2026-126714 ("phpAfterShell") for the end-of-life PHP packages of Enterprise Linux 6 and 7.</p>
+<p class="lead">Unofficial fixes for CVE-2026-109618 and CVE-2026-109619 ("php2shell"), CVE-2026-126714 ("phpAfterShell") and the other PHP vulnerabilities of 19 November 2026 that apply to PHP 5, for the end-of-life PHP packages of Enterprise Linux 6 and 7.</p>
 
 <table>
   <tr><th>Distribution</th><th>Fixed package</th></tr>
-  <tr><td>RHEL / CentOS / Oracle Linux / Scientific Linux 7</td><td><code>php-5.4.16-48.el7.php2shell.2</code></td></tr>
-  <tr><td>RHEL / CentOS / Oracle Linux 6</td><td><code>php-5.3.3-50.el6_10.php2shell.2</code></td></tr>
+  <tr><td>RHEL / CentOS / Oracle Linux / Scientific Linux 7</td><td><code>php-5.4.16-48.el7.php2shell.3</code></td></tr>
+  <tr><td>RHEL / CentOS / Oracle Linux 6</td><td><code>php-5.3.3-50.el6_10.php2shell.3</code></td></tr>
 </table>
+
+<h2>What release 3 covers</h2>
+<p>PHP published 17 security advisories on 19 November 2026. We checked every one of them against the code of both packages:</p>
+<table>
+  <tr><th>Result for PHP 5.3 / 5.4</th><th>CVEs</th></tr>
+  <tr><td>fixed (release 2)</td><td>CVE-2026-126714 (phpAfterShell)</td></tr>
+  <tr><td>fixed (release 3)</td><td>CVE-2026-129496, CVE-2026-128064, CVE-2026-128090, CVE-2026-129292, CVE-2026-129538, CVE-2026-15353</td></tr>
+  <tr><td>closed by release 1 (EL7) / not present (EL6)</td><td>CVE-2026-115560</td></tr>
+  <tr><td>not applicable: the code does not exist in PHP 5</td><td>CVE-2026-129289, CVE-2026-129481, CVE-2026-129182, CVE-2026-129474, CVE-2026-127960, CVE-2026-129291, CVE-2026-129506, CVE-2026-129438, CVE-2026-129501</td></tr>
+</table>
+<p>The reason for each CVE is in the <a href="https://github.com/alvm/php2shell-eol-backport/blob/main/docs/REVIEW-PHP-2026-11-19.md">full review</a>.</p>
 
 <h2>Install</h2>
 <pre># EL7
