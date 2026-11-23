@@ -18,7 +18,7 @@
 Summary: PHP scripting language for creating dynamic web sites
 Name: php
 Version: 5.3.3
-Release: 50%{?dist}.php2shell.3
+Release: 50%{?dist}.php2shell.4
 License: PHP
 Group: Development/Languages
 URL: http://www.php.net/
@@ -181,6 +181,10 @@ Patch9006: php-5.3.3-50.el6_10-cve-2026-129292.patch
 Patch9007: php-5.3.3-50.el6_10-cve-2026-129538.patch
 # CVE-2026-15353, SOAP out-of-bounds read on an empty arraySize (382d2494805)
 Patch9008: php-5.3.3-50.el6_10-cve-2026-15353.patch
+# release 4: CVE-2026-129291, PHP-FPM epoll use-after-free (13c4db29870)
+Patch9009: php-5.3.3-50.el6_10-cve-2026-129291.patch
+# release 4: CVE-2026-129506, SOAP keeps the DTD during cleanup (13a0f8c8c16)
+Patch9010: php-5.3.3-50.el6_10-cve-2026-129506.patch
 
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -660,6 +664,8 @@ support for using the enchant library to PHP.
 %patch9006 -p1 -b .cve129292
 %patch9007 -p1 -b .cve129538
 %patch9008 -p1 -b .cve15353
+%patch9009 -p1 -b .cve129291
+%patch9010 -p1 -b .cve129506
 
 # Prevent %%doc confusion over LICENSE files
 cp Zend/LICENSE Zend/ZEND_LICENSE
@@ -1147,6 +1153,12 @@ fi
 
 
 %changelog
+* Mon Nov 23 2026 Oleksii Molchanov <2106429+alvm@users.noreply.github.com> - 5.3.3-50.php2shell.4
+- Fix CVE-2026-129291: PHP-FPM removes the events of a worker's stdio pipes
+  before it closes them (port of php-src 13c4db29870)
+- Fix CVE-2026-129506: SOAP keeps the DTD node while it cleans up a parsed
+  WSDL or schema document (port of php-src 13a0f8c8c16)
+
 * Fri Nov 20 2026 Oleksii Molchanov <2106429+alvm@users.noreply.github.com> - 5.3.3-50.php2shell.3
 - Fix CVE-2026-129496 (timezone cache use-after-free): the timestamp of the
   file-based error log is in UTC outside a started request (port of php-src

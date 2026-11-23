@@ -2,7 +2,8 @@
 # Check whether the installed PHP 5.x packages carry the php2shell-eol-backport
 # fixes (EL6 / EL7): CVE-2026-109618 / CVE-2026-109619 since .php2shell.1,
 # CVE-2026-126714 (phpAfterShell) since .php2shell.2, the other applicable issues of
-# 19 Nov 2026 (CVE-2026-129496, -128064, -128090, -129292, -129538, -15353) since .php2shell.3.
+# 19 Nov 2026 (CVE-2026-129496, -128064, -128090, -129292, -129538, -15353) since .php2shell.3,
+# CVE-2026-129291 and CVE-2026-129506 since .php2shell.4.
 #
 # Exit status: 0 = fixed (or no PHP 5.x installed), 1 = vulnerable package found,
 #              2 = fixed, but a running process still uses the old code,
@@ -11,7 +12,8 @@ status=0
 outdated=0
 # CVEs fixed after release 1, in release order
 later_fixes="CVE-2026-126714:phpAfterShell CVE-2026-129496:timezone-cache CVE-2026-128064:https-case
-CVE-2026-128090:phar-signature CVE-2026-129292:fpm-status-xss CVE-2026-129538:cgi-path-info CVE-2026-15353:soap-array"
+CVE-2026-128090:phar-signature CVE-2026-129292:fpm-status-xss CVE-2026-129538:cgi-path-info CVE-2026-15353:soap-array
+CVE-2026-129291:fpm-epoll CVE-2026-129506:soap-dtd"
 
 pkgs=$(rpm -qa --qf '%{NAME} %{VERSION}-%{RELEASE} %{SOURCERPM}\n' | awk '$3 ~ /^php-5\./')
 if [ -z "$pkgs" ]; then

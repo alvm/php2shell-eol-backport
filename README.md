@@ -3,8 +3,8 @@
 ![php2shell-eol-backport: fixes for php2shell, phpAfterShell and the other PHP vulnerabilities of 19 Nov 2026 for the PHP 5.4 / 5.3 packages of EL7 / EL6](docs/social-preview/social-preview.png)
 
 Unofficial backport of the official fixes for **CVE-2026-109618** and **CVE-2026-109619** ("php2shell") and,
-since release 2, **CVE-2026-126714** ("phpAfterShell") and, since release 3, all other issues of the PHP security
-releases of 19 November 2026 that apply to PHP 5 to the end-of-life PHP packages of **Enterprise Linux 6 and 7**:
+since release 2, **CVE-2026-126714** ("phpAfterShell") and, since releases 3 and 4, all other issues of the PHP
+security releases of 19 November 2026 that apply to PHP 5 to the end-of-life PHP packages of **Enterprise Linux 6 and 7**:
 `php-5.3.3` (RHEL / CentOS / Oracle Linux 6) and `php-5.4.16` (RHEL / CentOS / Oracle Linux / Scientific Linux 7).
 Which of these CVEs affect PHP 5 is explained in [How serious is this on PHP 5?](#how-serious-is-this-on-php-5),
 [phpAfterShell (CVE-2026-126714) and CVE-2026-115560](#phpaftershell-cve-2026-126714-and-cve-2026-115560) and
@@ -12,7 +12,8 @@ Which of these CVEs affect PHP 5 is explained in [How serious is this on PHP 5?]
 
 PHP fixed php2shell on 21 Oct 2026 in 8.2.35, 8.3.36, 8.4.27 and 8.5.12, and published source backports for
 7.4, 8.0 and 8.1. Nothing was released for PHP 5. Red Hat and Oracle later shipped a fix for CVE-2026-109619 in
-PHP 5.4 to their paid RHEL 7 / Oracle Linux 7 extended support customers only; there is no vendor fix for EL6
+PHP 5.4 to their paid RHEL 7 / Oracle Linux 7 extended support customers only, and on 22 Nov 2026 Red Hat
+shipped the fixes of 19 Nov for RHEL 7 extended support too; there is no vendor fix for EL6
 (see [docs/ALTERNATIVES.md](docs/ALTERNATIVES.md)). If you have to keep such a system running, this project
 gives you rebuilt vendor packages with a port of the official minimal fix.
 
@@ -32,28 +33,37 @@ gives you rebuilt vendor packages with a port of the official minimal fix.
   ("phpAfterShell", CVSS 4.0 9.2): a port of php-src commit
   [41c0941ae27](https://github.com/php/php-src/commit/41c0941ae27d1033129e0e09ce3af034ffee86ba)
   ("Fix GHSA-fm2m-fjf5-v3cp: RCE via corrupted session file"), as a second, separate patch.
-- Release 3 adds the six other issues of 19 November 2026 that apply to PHP 5, one patch each, ported from the
+- Release 3 adds six more issues of 19 November 2026 that apply to PHP 5, one patch each, ported from the
   upstream commits: CVE-2026-129496 (critical, timezone cache use-after-free), CVE-2026-128064 (high, mixed-case
   HTTPS / FTPS URLs sent in plaintext), CVE-2026-128090 (high, PHAR signature downgrade), CVE-2026-129292
   (medium, PHP-FPM status page XSS), CVE-2026-129538 (medium, php-cgi `PATH_INFO`) and CVE-2026-15353 (medium,
   SOAP out-of-bounds read). The full review of all 17 advisories, with the reasons why the others do not apply,
   is in [docs/REVIEW-PHP-2026-11-19.md](docs/REVIEW-PHP-2026-11-19.md).
+- Release 4 adds CVE-2026-129291 (high, PHP-FPM epoll use-after-free, php-src
+  [13c4db29870](https://github.com/php/php-src/commit/13c4db2987098737278ef78849bb791866021c3c)) and CVE-2026-129506 (medium, SOAP DTD cleanup,
+  php-src [13a0f8c8c16](https://github.com/php/php-src/commit/13a0f8c8c1634d80de1a42016390b1bc3bd6e470)). The first review listed both as not
+  applicable. Red Hat fixed both in its RHEL 7 update of 22 Nov 2026, so we checked the code again: we were wrong
+  about CVE-2026-129291, and for CVE-2026-129506 the fix matters only when PHP loads a WSDL or schema document. See
+  [the correction](docs/REVIEW-PHP-2026-11-19.md#correction-in-release-4).
 - The patches are made against the vendor source trees. They do not apply to the plain `php-5.4.16` /
   `php-5.3.3` release tarballs, which lack the vendor's later security fixes in the same code
   (for example CVE-2015-4024 in multipart header parsing).
 
 | Distribution | Vendor package | Fixed package from this project |
 |---|---|---|
-| RHEL / CentOS / Oracle Linux / Scientific Linux 7 | `php-5.4.16-48.el7` | `php-5.4.16-48.el7.php2shell.3` |
-| RHEL / CentOS / Oracle Linux 6 | `php-5.3.3-50.el6_10` | `php-5.3.3-50.el6_10.php2shell.3` |
+| RHEL / CentOS / Oracle Linux / Scientific Linux 7 | `php-5.4.16-48.el7` | `php-5.4.16-48.el7.php2shell.4` |
+| RHEL / CentOS / Oracle Linux 6 | `php-5.3.3-50.el6_10` | `php-5.3.3-50.el6_10.php2shell.4` |
 
-Release 1 (`.php2shell.1`) has the php2shell fix only, release 2 (`.php2shell.2`) adds phpAfterShell.
+Release 1 (`.php2shell.1`) has the php2shell fix only, release 2 (`.php2shell.2`) adds phpAfterShell, release 3
+(`.php2shell.3`) the other fixes of 19 Nov 2026 except CVE-2026-129291 and CVE-2026-129506.
 
 The release suffix sorts above the vendor package, and below vendor errata, so an official fix replaces
 this one with a normal update. This now matters on EL7: the extended support updates of Red Hat
-(`php-5.4.16-48.el7_9.1`) and Oracle (`php-5.4.16-48.0.1.el7`) sort above this project's packages. If your
-system gets updates from such a channel, `yum update` replaces them with the vendor package. That package fixes
-CVE-2026-109619, but as of 20 Nov 2026 not CVE-2026-126714 (phpAfterShell) or the issues fixed in release 3.
+(`php-5.4.16-48.el7_9.1` and `…el7_9.2`) and Oracle (`php-5.4.16-48.0.1.el7`) sort above this project's packages.
+If your system gets updates from such a channel, `yum update` replaces them with the vendor package. As of
+23 Nov 2026, Red Hat's `php-5.4.16-48.el7_9.2` ([RHSA-2026:101337](https://access.redhat.com/errata/RHSA-2026:101337))
+fixes the issues of 19 Nov 2026 that apply to PHP 5.4, and Oracle's `php-5.4.16-48.0.1.el7` fixes only
+CVE-2026-109619.
 
 ### How serious is this on PHP 5?
 
@@ -144,8 +154,9 @@ packages ([full review](docs/REVIEW-PHP-2026-11-19.md)):
 |---|---|
 | fixed in release 2 | CVE-2026-126714 (phpAfterShell) |
 | fixed in release 3 | CVE-2026-129496, CVE-2026-128064, CVE-2026-128090, CVE-2026-129292, CVE-2026-129538, CVE-2026-15353 |
+| fixed in release 4 | CVE-2026-129291, CVE-2026-129506 (WSDL and schema loading) |
 | closed by release 1 (EL7) / not present (EL6) | CVE-2026-115560 |
-| not applicable: the code does not exist in PHP 5 | CVE-2026-129289, CVE-2026-129481, CVE-2026-129182, CVE-2026-129474, CVE-2026-127960, CVE-2026-129291, CVE-2026-129506, CVE-2026-129438, CVE-2026-129501 |
+| not applicable: the code does not exist in PHP 5 | CVE-2026-129289, CVE-2026-129481, CVE-2026-129182, CVE-2026-129474, CVE-2026-127960, CVE-2026-129438, CVE-2026-129501 |
 
 Red Hat's bulletin [RHSB-2026-020](https://access.redhat.com/security/vulnerabilities/RHSB-2026-020) covers the
 seven critical ones. Two of them need a closer look on PHP 5:
@@ -186,6 +197,11 @@ The repository contains only the PHP packages of this project, and both the pack
 metadata are signed (`gpgcheck=1`, `repo_gpgcheck=1`). The RPMs and source RPMs are also attached to each
 [release](https://github.com/alvm/php2shell-eol-backport/releases), with a signed `SHA256SUMS`; install them
 with `yum localinstall`.
+
+To roll back to the vendor packages, run `yum downgrade` for the installed PHP packages and restart the services.
+yum needs the vendor version of every installed PHP package: on EL7 some of them, for example `php-fpm`,
+`php-mbstring` and `php-mysqlnd`, come from the optional repository (`ol7_optional_latest` on Oracle Linux 7,
+`rhel-7-server-optional-rpms` on RHEL 7), which must be enabled for the downgrade.
 
 ## Check a system
 
@@ -255,6 +271,11 @@ This is a minimal mitigation of the published attack paths, not a full security 
   request to an `HTTPS://` URL changed from plaintext `GET` to a TLS handshake (CVE-2026-128064), and a SHA1-signed
   phar next to a `.pubkey` file changed from opened to rejected (CVE-2026-128090). The other three fixes were
   checked by code review against the upstream commits and by the test suite.
+
+- Release 4 has exactly the same failed tests as release 3 on both EL6 and EL7. Its two patches are the same lines
+  as the upstream commits. In clean containers, after an update from release 3, PHP-FPM with
+  `catch_workers_output = yes` kept running through repeated kills of its workers, and `SoapClient` loaded a WSDL
+  document with a `DOCTYPE`. These are regression checks of the changed code paths, not tests of the vulnerabilities.
 
 - The PHP 5.4 patch was compared with an independent port of the same fix for Amazon Linux 2's `php-5.4.16`:
   the core changes are identical. The differences are listed in [docs/ALTERNATIVES.md](docs/ALTERNATIVES.md).

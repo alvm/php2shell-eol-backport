@@ -6,9 +6,11 @@ lists every one of them and says, for the two packages of this project, whether 
 - EL7: `php-5.4.16-48.el7` (RHEL / CentOS / Oracle Linux / Scientific Linux 7)
 - EL6: `php-5.3.3-50.el6_10` (RHEL / CentOS / Oracle Linux 6)
 
-**In short:** 8 of the 17 issues affect these packages. All 8 are fixed: phpAfterShell (CVE-2026-126714) in release 2,
-the other 7 in release 3. One more, CVE-2026-115560, is already closed by release 1. The other 8 do not apply,
-because the code they fix does not exist in PHP 5.3 / 5.4.
+**In short:** 8 of the 17 issues affect these packages, and a 9th (CVE-2026-129506) has its defect only in a path
+that PHP does not count as a security issue. All 9 are fixed: phpAfterShell (CVE-2026-126714) in release 2, 6 in
+release 3, and CVE-2026-129291 and CVE-2026-129506 in release 4 (see
+[Correction in release 4](#correction-in-release-4)). One more, CVE-2026-115560, is already closed by release 1. The
+other 7 do not apply, because the code they fix does not exist in PHP 5.3 / 5.4.
 
 ## How we checked
 
@@ -35,11 +37,11 @@ commit, changed only where the PHP 5 API differs, and each port is a separate pa
 | CVE-2026-128064 | [GHSA-f6gg-rchx-xw8j](https://github.com/php/php-src/security/advisories/GHSA-f6gg-rchx-xw8j) | high | mixed-case HTTPS / FTPS URLs sent in plaintext | affected | affected | **fixed in release 3** |
 | CVE-2026-128090 | [GHSA-68fq-fh7h-f8gr](https://github.com/php/php-src/security/advisories/GHSA-68fq-fh7h-f8gr) | high | PHAR OpenSSL signature downgrade | affected | affected | **fixed in release 3** |
 | CVE-2026-127960 | [GHSA-mmf9-xm3v-hg2x](https://github.com/php/php-src/security/advisories/GHSA-mmf9-xm3v-hg2x) | high | slow parsing of folded HTTP response headers | not affected | not affected | not applicable |
-| CVE-2026-129291 | [GHSA-jm4m-qfqx-967m](https://github.com/php/php-src/security/advisories/GHSA-jm4m-qfqx-967m) | high | PHP-FPM epoll use-after-free | not affected | not affected | not applicable |
+| CVE-2026-129291 | [GHSA-jm4m-qfqx-967m](https://github.com/php/php-src/security/advisories/GHSA-jm4m-qfqx-967m) | high | PHP-FPM epoll use-after-free | affected | affected | **fixed in release 4** |
 | CVE-2026-129292 | [GHSA-3mg3-cr28-46gc](https://github.com/php/php-src/security/advisories/GHSA-3mg3-cr28-46gc) | medium | PHP-FPM status page XSS | affected | affected | **fixed in release 3** |
 | CVE-2026-129538 | [GHSA-5j3f-64r7-f564](https://github.com/php/php-src/security/advisories/GHSA-5j3f-64r7-f564) | medium | php-cgi `PATH_INFO` out-of-bounds read and write | affected | affected | **fixed in release 3** |
 | CVE-2026-15353 | [GHSA-q23r-hr55-xmpg](https://github.com/php/php-src/security/advisories/GHSA-q23r-hr55-xmpg) | medium | SOAP out-of-bounds read on an empty array size | affected | affected | **fixed in release 3** |
-| CVE-2026-129506 | [GHSA-4646-p932-gw34](https://github.com/php/php-src/security/advisories/GHSA-4646-p932-gw34) | medium | SOAP use-after-free with DTD entity references | not affected | not affected | not applicable |
+| CVE-2026-129506 | [GHSA-4646-p932-gw34](https://github.com/php/php-src/security/advisories/GHSA-4646-p932-gw34) | medium | SOAP use-after-free with DTD entity references | WSDL / schema loading only | WSDL / schema loading only | **fixed in release 4** |
 | CVE-2026-129438 | [GHSA-mg3p-mxj9-g2mm](https://github.com/php/php-src/security/advisories/GHSA-mg3p-mxj9-g2mm) | medium | RFC 3986 URI serialization | not affected | not affected | not applicable |
 | CVE-2026-129501 | [GHSA-x8r7-mg3g-74hg](https://github.com/php/php-src/security/advisories/GHSA-x8r7-mg3g-74hg) | medium | double free in DOM XML serialization | not affected | not affected | not applicable |
 
@@ -54,6 +56,8 @@ commit, changed only where the PHP 5 API differs, and each port is a separate pa
 | CVE-2026-129292 | [37abd0a7f7b](https://github.com/php/php-src/commit/37abd0a7f7b444ad8f9fb1b5c7993488b1cf5fb3) | Patch9006 | The HTML and XML full status of PHP-FPM escapes the request method, URI, query string, user and script name. |
 | CVE-2026-129538 | [1e109bfbd2f](https://github.com/php/php-src/commit/1e109bfbd2f80367882f9866dbc6aa8088f0551f) | Patch9007 | php-cgi rewrites `PATH_INFO` only when it is longer than the suffix it strips. |
 | CVE-2026-15353 | [382d2494805](https://github.com/php/php-src/commit/382d24948058d1d586ea48c549a65eb41ac531c6) | Patch9008 | An empty SOAP array size counts as one dimension. |
+| CVE-2026-129291 | [13c4db29870](https://github.com/php/php-src/commit/13c4db2987098737278ef78849bb791866021c3c) | Patch9009 | When a worker exits, the PHP-FPM master removes the events of its stdout / stderr pipes before it closes them, and invalidates the descriptors. |
+| CVE-2026-129506 | [13a0f8c8c16](https://github.com/php/php-src/commit/13a0f8c8c1634d80de1a42016390b1bc3bd6e470) | Patch9010 | The SOAP extension keeps the DTD node while it cleans up a parsed WSDL or schema document. |
 
 Notes on the ports:
 
@@ -73,6 +77,33 @@ Notes on the ports:
   had kept it. php-cgi is in the `php-cli` package and is used when a web server runs PHP through CGI or FastCGI with
   `php-cgi`.
 
+## Correction in release 4
+
+The first version of this review (release 3) listed CVE-2026-129291 and CVE-2026-129506 as not applicable. On 22 Nov
+2026 Red Hat fixed both in its RHEL 7 update (`php-5.4.16-48.el7_9.2`, RHSA-2026:101337), so we checked the code
+again.
+
+- **CVE-2026-129291 was a mistake on our side.** PHP dates the issue to 8.1.20, because in PHP 8 before 8.1.20 the
+  stdout / stderr events of a worker carried its process ID, and the handler looked the worker up and did nothing
+  when it was gone. The PHP 5.3 / 5.4 vendor code is different: the event carries a pointer to the worker record, as
+  in 8.1.20 and later. When a worker exits, `fpm_child_close()` closes its pipes without removing their epoll events
+  and frees the record at once, and a new worker switches to the pool user before it closes the pipes that it
+  inherited from the master. So the use-after-free of the advisory exists in both packages. It requires local code
+  execution in a PHP-FPM worker and `catch_workers_output = yes`, which the vendor `php-fpm.d/www.conf` leaves
+  commented out (off). Release 4 ports the upstream fix.
+
+  Why we got it wrong: the first review relied on PHP's statement that the affected delayed-cleanup path was
+  introduced in 8.1.20, saw that PHP-FPM 5.3 / 5.4 has no delayed cleanup, and stopped there. It did not compare how
+  the event handler finds the worker, which is the part that decides whether freed memory is used.
+- **CVE-2026-129506 stays as described for SOAP server requests:** PHP 5.3 / 5.4 parse them without the cleanup that
+  removes the DTD, and reject them when they have one. The same cleanup does run when PHP loads a WSDL or schema
+  document, so the defect exists there. PHP does not count untrusted WSDL or schema documents as a security issue,
+  but Red Hat fixed it for RHEL 7 (rated Low), and release 4 ports the fix for the same coverage.
+- **A counting error:** the summary of the first version said that 8 issues affect the packages (1 fixed in release 2,
+  7 in release 3) and that 8 do not apply. By the results table of that version, 7 were affected (1 in release 2, 6 in
+  release 3) and 9 did not apply; the two errors cancelled out in the total of 17. The summary above has the corrected
+  numbers for release 4.
+
 ## Closed earlier: CVE-2026-115560
 
 The issue is in session upload progress, which "was introduced in PHP 5.4.0". Release 1 disables session upload
@@ -84,13 +115,11 @@ well".
 
 | CVE | Why PHP 5.3 / 5.4 are not affected |
 |---|---|
-| CVE-2026-129289 | PHP: the affected code "has been present since PHP 5.6.0", which made reading `php://input` lazy. In PHP 5.3 / 5.4, request shutdown always reads and discards a request body that was not read in full, and a body that is read is read to its `Content-Length`, so no unread bytes stay on a FastCGI connection. Red Hat's VEX data lists RHEL 6 and 7 as affected; the code does not support that. |
+| CVE-2026-129289 | PHP: the affected code "has been present since PHP 5.6.0", which made reading `php://input` lazy. In PHP 5.3 / 5.4, request shutdown always reads and discards a request body that was not read in full, and a body that is read is read to its `Content-Length`, so no unread bytes stay on a FastCGI connection. Red Hat's VEX data lists RHEL 6 and 7 as affected, and its RHEL 7 update of 22 Nov 2026 does not fix it either; the code does not support that it applies. |
 | CVE-2026-129481 | PHP: "The affected field was introduced in PHP 8.3.0" (the file and line where a session was started). PHP 5 does not have it. |
 | CVE-2026-129182 | PHP: "The affected global was introduced in PHP 8.5.0 by fatal error backtraces." PHP 5 has neither. |
 | CVE-2026-129474 | PHP: the attack path "was introduced in PHP 8.5.0 by fatal error backtraces". The underlying error is in how PHP 7 and later enter a method handled by `__call()`; PHP 5 handles these calls differently and has no fatal error backtraces. With release 1, a `memory_limit` error also ends the process at once. |
-| CVE-2026-127960 | PHP: "The affected code was introduced by the fix for GHSA-v8xr-gpvj-cx9g, first released in PHP 8.1.32". The http wrapper of PHP 5 does not have this header folding code. Red Hat's VEX data (20 Nov 2026) lists RHEL 6 and 7 as affected; the vendor code of both packages does not support that. |
-| CVE-2026-129291 | PHP: "The affected delayed-cleanup path was introduced by the fix for GH-10461, first released in PHP 8.1.20 and 8.2.7." PHP-FPM 5.3 / 5.4 frees a worker at once and has no delayed cleanup. Red Hat's VEX data (20 Nov 2026) lists RHEL 6 and 7 as affected; the vendor code of both packages does not support that. |
-| CVE-2026-129506 | PHP: "SOAP server requests have been affected since PHP 5.6.0". From 5.6 the SOAP server reads the request through a parser path that also runs a cleanup which removes the DTD. PHP 5.3 / 5.4 parse the request without that cleanup, so the DTD stays and the server rejects the request with "DTD are not supported by SOAP". The cleanup runs only when PHP loads a WSDL or schema document, and PHP states that "loading an untrusted WSDL or schema is not considered a security issue". Red Hat's VEX data (20 Nov 2026) lists RHEL 6 and 7 as affected; for SOAP server requests the vendor code of both packages does not support that. |
+| CVE-2026-127960 | PHP: "The affected code was introduced by the fix for GHSA-v8xr-gpvj-cx9g, first released in PHP 8.1.32". The http wrapper of PHP 5 does not have this header folding code. Red Hat's VEX data listed RHEL 6 and 7 as affected on 20 Nov 2026; since 22 Nov it lists RHEL 7 as not affected. |
 | CVE-2026-129438 | Affects the `Uri\Rfc3986\Uri` class of PHP 8.5. PHP 5 has no URI extension. |
 | CVE-2026-129501 | Affects the `Dom\XMLDocument` and `Dom\HTMLDocument` classes of PHP 8.4. PHP 5 has only the legacy `DOMDocument`, which "does not use this serializer". |
 

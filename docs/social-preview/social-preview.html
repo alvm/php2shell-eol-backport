@@ -59,20 +59,20 @@
   .tname { margin-left: 10px; font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
            font-size: 14px; color: var(--muted); }
   pre { font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace; font-size: 15.5px;
-        line-height: 1.62; padding: 14px 18px 16px; white-space: pre; }
+        line-height: 1.45; padding: 12px 18px 14px; white-space: pre; }
   .c { color: var(--muted); }
   .k { color: var(--red); }
   .v { color: var(--blue); }
   .t1 { color: var(--green); font-weight: 800; }
   .t2 { color: var(--amber); font-weight: 800; }
   .t { color: var(--purple); }
-  .win2 { top: 392px; }
+  .win2 { top: 404px; }
   .ok { color: var(--green); font-weight: 800; }
   .p { color: var(--green); }
   .foot { position: absolute; left: 0; right: 0; bottom: 0; height: 70px; background: rgba(13,17,23,.92);
           border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between;
           padding: 0 48px 0 60px; }
-  .stat { font-size: 17px; color: var(--muted); }
+  .stat { font-size: 16px; color: var(--muted); }
   .stat b { color: var(--green); }
   .url { font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace; font-size: 18px; color: var(--fg); }
 </style>
@@ -92,12 +92,12 @@
     <div class="dist">
       <span class="el">EL7</span>
       <div><div class="os">RHEL · CentOS · Oracle Linux · Scientific Linux 7</div>
-           <div class="pkg">php-5.4.16-48.el7.php2shell.3</div></div>
+           <div class="pkg">php-5.4.16-48.el7.php2shell.4</div></div>
     </div>
     <div class="dist">
       <span class="el">EL6</span>
       <div><div class="os">RHEL · CentOS · Oracle Linux 6</div>
-           <div class="pkg">php-5.3.3-50.el6_10.php2shell.3</div></div>
+           <div class="pkg">php-5.3.3-50.el6_10.php2shell.4</div></div>
     </div>
   </div>
   <div class="how">Rebuilt from the vendor SRPMs · <b>PHP test suite in CI</b><br>GPG-signed RPMs and repodata · rollback with <b>yum downgrade</b></div>
@@ -106,7 +106,7 @@
 <div class="win">
   <div class="tbar">
     <span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span>
-    <span class="tname">php.spec · release 3</span>
+    <span class="tname">php.spec · release 4</span>
   </div>
 <pre><span class="c"># one patch per CVE, ported from php-src</span>
 <span class="k">Patch9001:</span> <span class="v">CVE-2026-109618/109619</span> <span class="t1">php2shell</span>
@@ -117,6 +117,8 @@
 <span class="k">Patch9006:</span> <span class="v">CVE-2026-129292</span>        <span class="t">FPM status XSS</span>
 <span class="k">Patch9007:</span> <span class="v">CVE-2026-129538</span>        <span class="t">php-cgi PATH_INFO</span>
 <span class="k">Patch9008:</span> <span class="v">CVE-2026-15353</span>         <span class="t">SOAP OOB read</span>
+<span class="k">Patch9009:</span> <span class="v">CVE-2026-129291</span>        <span class="t">FPM epoll UAF</span>
+<span class="k">Patch9010:</span> <span class="v">CVE-2026-129506</span>        <span class="t">SOAP DTD cleanup</span>
 <span class="c"># CVE-2026-115560: no upload progress since 9001</span></pre>
 </div>
 
@@ -126,13 +128,13 @@
     <span class="tname">root@el7 ~</span>
   </div>
 <pre><span class="p">#</span> yum update 'php*' &amp;&amp; ./tools/check-patched.sh
-<span class="ok">FIXED</span>       php-5.4.16-48.el7.php2shell.3
-<span class="ok">FIXED</span>       php-cli-5.4.16-48.el7.php2shell.3
-<span class="ok">FIXED</span>       php-common-5.4.16-48.el7.php2shell.3</pre>
+<span class="ok">FIXED</span>       php-5.4.16-48.el7.php2shell.4
+<span class="ok">FIXED</span>       php-cli-5.4.16-48.el7.php2shell.4
+<span class="ok">FIXED</span>       php-common-5.4.16-48.el7.php2shell.4</pre>
 </div>
 
 <div class="foot">
-  <div class="stat"><b>17 / 17</b> PHP advisories of 19 Nov 2026 reviewed · <b>8</b> apply · <b>8</b> fixed · signed yum repo</div>
+  <div class="stat"><b>17 / 17</b> PHP advisories of 19 Nov 2026 reviewed · <b>10</b> apply · <b>10</b> fixed · signed yum repo</div>
   <div class="url">github.com/alvm/php2shell-eol-backport</div>
 </div>
 </body>
