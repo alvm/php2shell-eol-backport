@@ -259,7 +259,10 @@ This is a minimal mitigation of the published attack paths, not a full security 
 
   The exact counts vary slightly between build environments: on GitHub runners two SPL file-owner tests
   (`DirectoryIterator_getOwner/getGroup_basic`) also fail, and `time_sleep_until_basic` is timing-sensitive.
-  None of them touches code changed by the patch.
+  On EL7, `ext/session/tests/session_set_save_handler_class_005.phpt` fails at random, about once in 60 to 75
+  runs, with the unmodified vendor package as well as with release 4: the session garbage collector runs at
+  random (probability 1/100) and adds a warning that the test does not expect. It failed once in the CI build
+  of release 4. None of them touches code changed by the patch.
 
 - Release 2 (phpAfterShell fix) has exactly the same failed tests as release 1 on both EL6 and EL7, including
   the session tests. The release 2 binaries (`libphp5.so`, `php`) contain the new code, and the release 1
