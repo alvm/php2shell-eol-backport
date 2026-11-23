@@ -27,18 +27,19 @@
 
 <table>
   <tr><th>Distribution</th><th>Fixed package</th></tr>
-  <tr><td>RHEL / CentOS / Oracle Linux / Scientific Linux 7</td><td><code>php-5.4.16-48.el7.php2shell.3</code></td></tr>
-  <tr><td>RHEL / CentOS / Oracle Linux 6</td><td><code>php-5.3.3-50.el6_10.php2shell.3</code></td></tr>
+  <tr><td>RHEL / CentOS / Oracle Linux / Scientific Linux 7</td><td><code>php-5.4.16-48.el7.php2shell.4</code></td></tr>
+  <tr><td>RHEL / CentOS / Oracle Linux 6</td><td><code>php-5.3.3-50.el6_10.php2shell.4</code></td></tr>
 </table>
 
-<h2>What release 3 covers</h2>
+<h2>What releases 3 and 4 cover</h2>
 <p>PHP published 17 security advisories on 19 November 2026. We checked every one of them against the code of both packages:</p>
 <table>
   <tr><th>Result for PHP 5.3 / 5.4</th><th>CVEs</th></tr>
   <tr><td>fixed (release 2)</td><td>CVE-2026-126714 (phpAfterShell)</td></tr>
   <tr><td>fixed (release 3)</td><td>CVE-2026-129496, CVE-2026-128064, CVE-2026-128090, CVE-2026-129292, CVE-2026-129538, CVE-2026-15353</td></tr>
+  <tr><td>fixed (release 4)</td><td>CVE-2026-129291, CVE-2026-129506 (WSDL and schema loading)</td></tr>
   <tr><td>closed by release 1 (EL7) / not present (EL6)</td><td>CVE-2026-115560</td></tr>
-  <tr><td>not applicable: the code does not exist in PHP 5</td><td>CVE-2026-129289, CVE-2026-129481, CVE-2026-129182, CVE-2026-129474, CVE-2026-127960, CVE-2026-129291, CVE-2026-129506, CVE-2026-129438, CVE-2026-129501</td></tr>
+  <tr><td>not applicable: the code does not exist in PHP 5</td><td>CVE-2026-129289, CVE-2026-129481, CVE-2026-129182, CVE-2026-129474, CVE-2026-127960, CVE-2026-129438, CVE-2026-129501</td></tr>
 </table>
 <p>The reason for each CVE is in the <a href="https://github.com/alvm/php2shell-eol-backport/blob/main/docs/REVIEW-PHP-2026-11-19.md">full review</a>.</p>
 
